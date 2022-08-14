@@ -204,6 +204,7 @@ overflow-x: hidden;
 
 .hoveredClass{
     background-color: blue !important;
+    z-index: 100 !important;
 }
 time, [name="scrollheader"]{
     overflow: hidden !important;
