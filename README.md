@@ -1,4 +1,6 @@
 # UCSD-Schedule-Visualizer
+Important: Currently you have to click the extension button when you are looking at your webreg.
+  
 Chrome extension that creates a timetable of your WebReg classes and shows you where the class you are hovering over would fit in your schedue. This uses timetable.js.  
 The code is pretty jank, but if you want to fix that make a PR :)  
 Only tested on UCSD WebReg.
