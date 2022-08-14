@@ -25,7 +25,7 @@
     flex: none;
     max-width: 30%;
     padding: 0 !important;
-    margin-top: 46px;
+    margin-top: 30px;
     border-right: 5px solid transparent;
     position: relative
 }
@@ -33,7 +33,7 @@
 .timetable>aside li {
     padding: 0 15px;
     background-color: #efefef;
-    line-height: 46px
+    line-height: 25px
 }
 
 .timetable>aside li:not(:last-of-type) {
@@ -43,7 +43,8 @@
 .timetable>aside .row-heading {
     display: inline-block;
     max-width: 100%;
-    overflow: hidden;
+    overflow-y: hidden;
+overflow-x: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
     word-wrap: normal
@@ -53,15 +54,15 @@
     content: "";
     display: block;
     background-color: #fff;
-    height: 46px;
+    height: 25px;
     position: relative;
-    margin-top: -46px;
+    margin-top: -25px;
     top: 0
 }
 
 .timetable aside li,
 .timetable time li {
-    height: 46px
+    height: 25px
 }
 
 .timetable>section {
@@ -82,14 +83,15 @@
     top: 0;
     z-index: 3;
     width: 100%;
-    overflow: hidden;
+    overflow-y: hidden;
+overflow-x: hidden;
     background-color: #fff;
     transform-style: preserve-3d
 }
 
 .timetable>section>header ul {
     display: flex;
-    height: 46px;
+    height: 30px;
     align-items: center
 }
 
@@ -128,7 +130,7 @@
 .timetable ul.room-timeline li {
     position: relative;
     background-color: #f4f4f4;
-    height: 46px
+    height: 25px
 }
 
 .timetable ul.room-timeline li:nth-of-type(odd) {
@@ -176,13 +178,14 @@
 .timetable .time-entry {
     background-color: #ec6a5e;
     transition: background-color .2s;
-    height: 45px;
+    height: 24px !important;
     display: block;
     position: absolute;
     z-index: 2;
     padding: 0 10px;
     white-space: normal;
-    overflow: hidden;
+    overflow-y: hidden;
+    overflow-x: hidden;
     color: #fff;
     border: 1px solid #e32c1b;
     transform-style: preserve-3d
@@ -201,4 +204,7 @@
 
 .hoveredClass{
     background-color: blue !important;
+}
+time, [name="scrollheader"]{
+    overflow: hidden !important;
 }
