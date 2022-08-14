@@ -141,7 +141,7 @@ injectTableHTML(document).then(()=>{
 
             let timeEnd = dayTime.substring(dayTime.indexOf("-")+1);
             let timeEndHour = parseInt(timeEnd.substring(0, timeEnd.indexOf(":")));
-            if(timeEndHour.substring(timeEnd.length - 1)==="p" && timeEndHour != 12){
+            if(timeEnd.substring(timeEnd.length - 1)==="p" && timeEndHour != 12){
                 timeEndHour+=12;
             }
             let timeEndMin = parseInt(timeEnd.substring(timeEnd.indexOf(":")+1, timeEnd.length - 1));
