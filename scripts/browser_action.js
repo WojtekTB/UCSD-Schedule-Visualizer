@@ -15,7 +15,9 @@ async function injectTableHTML(scope){
     // get text between injectionElementStart and injectionElementEnd
     tableHTMLText = tableHTMLText.substring(tableHTMLText.indexOf(injectionElementStart), tableHTMLText.indexOf(injectionElementEnd));
     // adding element to html
-    scope.body.innerHTML += tableHTMLText;
+    let wrapper = document.createElement("div");
+    wrapper.innerHTML = tableHTMLText;
+    scope.body.appendChild(wrapper);
 }
 function forceExecuteScriptTags(tableHTMLText){
     let startScriptTagIndex = tableHTMLText.indexOf(scriptTagStart) + scriptTagStart.length;
@@ -58,7 +60,7 @@ function getScheduleFromPage(scope){
         }
         // if there is a row title that is not "Final Exam" set it as currentKey
         else if(currentKey === null && rowTitle){
-            currentKey = rowTitle;
+            currentKey = rowSubject;
             classInfo.set(currentKey, {title: rowTitle});
         }
 
@@ -107,14 +109,16 @@ function getScheduleFromPage(scope){
     }
     return classInfo;
 }
+
 var daysOfWeekCodes = ['M', 'Tu', 'W', 'Th', 'F'];
-injectTableHTML(document).then(()=>{
+injectTableHTML(document)
+.then(()=>{
     console.log("pulling current schedule..");
 
     let currentClasses = getScheduleFromPage(document);
     console.log(currentClasses);
     document.body.timetable = new Timetable();
-    document.body.timetable.setScope(9,18);
+    document.body.timetable.setScope(7,20);
     document.body.timetable.addLocations(daysOfWeekCodes);
     
     
@@ -153,7 +157,7 @@ injectTableHTML(document).then(()=>{
                     dayCode += days[j + 1];
                     j++;
                 }
-                // console.log(dayCode);
+                console.log(dayCode + " - " + timeStartHour);
                 document.body.timetable.addEvent(
                     value, dayCode, 
                     new Date(2015,7,17,timeStartHour,timeStartMin), 
@@ -169,4 +173,5 @@ injectTableHTML(document).then(()=>{
     document.body.renderer = new Timetable.Renderer(document.body.timetable);
     console.log(document.body.renderer);
     document.body.renderer.draw('.timetable');
-});
+});    
+

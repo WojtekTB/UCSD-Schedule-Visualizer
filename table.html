@@ -13,13 +13,13 @@
     
     <!-- INJECTION ELEMENT START -->
 
-    <div id="TimeTableContainer" >
-        <div class="timetable" style="position: absolute; top: 0; left: 0; z-index: 99999;"></div>
+    <div id="TimeTableContainer"  >
+        <div class="timetable" style="position: fixed; top: 0; left: 0;"></div>
         <script id="evalThisScript">
             console.log("Adding timetable");
             var testTimetable = new Timetable();
       
-            testTimetable.setScope(9,16);
+            testTimetable.setScope(0,23);
       
             testTimetable.addLocations(['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']);
       
