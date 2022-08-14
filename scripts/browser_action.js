@@ -114,7 +114,7 @@ injectTableHTML(document).then(()=>{
     let currentClasses = getScheduleFromPage(document);
     console.log(currentClasses);
     document.body.timetable = new Timetable();
-    document.body.timetable.setScope(9,16);
+    document.body.timetable.setScope(9,18);
     document.body.timetable.addLocations(daysOfWeekCodes);
     
     
