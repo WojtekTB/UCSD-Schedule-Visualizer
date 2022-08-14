@@ -5,6 +5,8 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <script src="scripts/timetable.js"></script>
+    <link rel="stylesheet" href="styles/timetablejs.css">
     
 </head>
 <body>
@@ -13,18 +15,15 @@
 
     <div id="TimeTableContainer" >
         <div class="timetable" style="position: absolute; top: 0; left: 0; z-index: 99999;"></div>
-        <div class="timetable"></div>
-        <script src="scripts/timetable.js"></script>
-        <link rel="stylesheet" href="styles/timetablejs.css">
         <script id="evalThisScript">
             console.log("Adding timetable");
-            var timetable = new Timetable();
+            var testTimetable = new Timetable();
       
-            timetable.setScope(9,16);
+            testTimetable.setScope(9,16);
       
-            timetable.addLocations(['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']);
+            testTimetable.addLocations(['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']);
       
-            var renderer = new Timetable.Renderer(timetable);
+            var renderer = new Timetable.Renderer(testTimetable);
             renderer.draw('.timetable');
         </script>
     </div>
