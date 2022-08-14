@@ -133,11 +133,17 @@ injectTableHTML(document).then(()=>{
 
 
             let timeStart = dayTime.substring(0, dayTime.indexOf("-"));
-            let timeStartHour = parseInt(timeStart.substring(0, timeStart.indexOf(":"))) + (timeStart.substring(timeStart.length - 1)==="a"?0:12)
+            let timeStartHour = parseInt(timeStart.substring(0, timeStart.indexOf(":")));
+            if(timeStart.substring(timeStart.length - 1)==="p" && timeStartHour != 12){
+                timeStartHour+=12;
+            }
             let timeStartMin = parseInt(timeStart.substring(timeStart.indexOf(":")+1, timeStart.length - 1));
 
             let timeEnd = dayTime.substring(dayTime.indexOf("-")+1);
-            let timeEndHour = parseInt(timeEnd.substring(0, timeEnd.indexOf(":"))) + (timeEnd.substring(timeStart.length - 1)==="a"?0:12)
+            let timeEndHour = parseInt(timeEnd.substring(0, timeEnd.indexOf(":")));
+            if(timeEndHour.substring(timeEnd.length - 1)==="p" && timeEndHour != 12){
+                timeEndHour+=12;
+            }
             let timeEndMin = parseInt(timeEnd.substring(timeEnd.indexOf(":")+1, timeEnd.length - 1));
             
             for (let j = 0; j < days.length; j++) {
