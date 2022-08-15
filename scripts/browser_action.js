@@ -23,7 +23,7 @@ class UCSDScheduleVisualizer{
             // update schedule
             this.updateCurrentSchedule();
             // render with just current schedule
-            this.renderTable([]);
+            this.renderTable();
             // console.log(document.body.timetable.events);
         });
     }
@@ -41,37 +41,25 @@ class UCSDScheduleVisualizer{
 
     whenHoverOverRow(event){
         const row = event.target;
-        // console.log(event);
+
         const dayCell = row.querySelector('[aria-describedby="search-div-b-table_DAY_CODE"]');
-        const days = dayCell.innerHTML.split("");
         const timeCell = row.querySelector('[aria-describedby="search-div-b-table_coltime"]');
         const dayTime = timeCell.innerHTML;
-        // console.log(dayCell.innerHTML + " -> " + timeCell.innerHTML);
-        // console.log(this.tempClass);
-        let timeStart = dayTime.substring(0, dayTime.indexOf("-"));
-        let timeStartHour = parseInt(timeStart.substring(0, timeStart.indexOf(":")));
-        if(timeStart.substring(timeStart.length - 1)==="p" && timeStartHour != 12){
-            timeStartHour+=12;
-        }
-        let timeStartMin = parseInt(timeStart.substring(timeStart.indexOf(":")+1, timeStart.length - 1));
+        
+        // convert new dates
+        let dates = this.textToDates(dayTime);
+        let timeStartHour = dates.start.getHours(), timeStartMin = dates.start.getMinutes();
+        let timeEndHour = dates.end.getHours(), timeEndMin = dates.end.getMinutes();
 
-        let timeEnd = dayTime.substring(dayTime.indexOf("-")+1);
-        let timeEndHour = parseInt(timeEnd.substring(0, timeEnd.indexOf(":")));
-        if(timeEnd.substring(timeEnd.length - 1)==="p" && timeEndHour != 12){
-            timeEndHour+=12;
-        }
-        let timeEndMin = parseInt(timeEnd.substring(timeEnd.indexOf(":")+1, timeEnd.length - 1));
+        // reset event times to be off screen
         for (let i = 0; i < daysOfWeekCodes.length; i++) {
             const dayCode = daysOfWeekCodes[i];
             this.tempClass.get(dayCode).startDate.setHours(23, 58);
             this.tempClass.get(dayCode).endDate.setHours(23, 59);
         }
+        const days = this.textToDays(dayCell.innerHTML);
         for (let j = 0; j < days.length; j++) {
             let dayCode = days[j];
-            if(!daysOfWeekCodes.includes(dayCode)){
-                dayCode += days[j + 1];
-                j++;
-            }
             this.tempClass.get(dayCode).startDate.setHours(timeStartHour, timeStartMin);
             this.tempClass.get(dayCode).endDate.setHours(timeEndHour, timeEndMin);
             //check if this overlaps with any of current classes
@@ -82,8 +70,6 @@ class UCSDScheduleVisualizer{
                     const event = eventsThatDay[j];
                     const a_start = this.tempClass.get(dayCode).startDate, a_end = this.tempClass.get(dayCode).endDate
                     const b_start = event.dateStart, b_end = event.dateEnd;
-                    console.log(`${a_start} - ${a_end} vs ${b_start} - ${b_end}`);
-                    console.log(a_start > b_start && a_start < b_end || b_start > a_start && b_start < a_end);
                     if(a_start >= b_start && a_start <= b_end || b_start >= a_start && b_start <= a_end){
                         overlaps = true;
                         break;
@@ -110,6 +96,53 @@ class UCSDScheduleVisualizer{
                 eventInfo.dateStart, eventInfo.dateEnd
                 );
         }
+        // check if there are any personal events (non classes)
+        let eventsListDiv = document.getElementById("list-id-event");
+        if(eventsListDiv === null){
+            return;
+        }
+        if(eventsListDiv.children === null || eventsListDiv.children.length <= 0){
+            return;
+        }
+        for (let i = 0; i < eventsListDiv.children[0].children.length; i++) {
+            const eventRow = eventsListDiv.children[0].children[i];
+            if(!eventRow.cells[0].innerHTML){
+                // ignore rows where first cell is empty, prob a template that is not actually used
+                continue;
+            }
+            const name = eventRow.cells[0].innerText;
+            const dates = this.textToDates(eventRow.cells[2].innerText + "-" + eventRow.cells[3].innerText);
+            
+            // figure out what days this happens by looking at check boxes
+            let days = [];
+            const checkboxes = eventRow.cells[4].children[0].children[0].children[1].children;
+            for(let i = 0; i < daysOfWeekCodes.length; i++){
+                if(checkboxes[i].children[0].checked){
+                    days.push(daysOfWeekCodes[i]);
+                }
+            }
+
+            for(let i = 0; i < days.length; i++){
+                // TODO prob should move this to where the initial event obj get populated
+                let eventObj = {
+                    subject: name, 
+                    day: days[i], 
+                    dateStart: dates.start, 
+                    dateEnd: dates.end
+                };
+                this.currentSchedulePayloads.push(eventObj);
+                if(!this.currentSchedulePayloadsMap.has(days[i])){
+                    this.currentSchedulePayloadsMap.set(days[i], []);
+                }
+                this.currentSchedulePayloadsMap.get(days[i]).push(eventObj);
+                
+                document.body.timetable.addEvent(
+                    name, days[i], 
+                    dates.start, dates.end
+                    );
+            }
+        }
+        
     }
 
     renderTable(){
@@ -154,20 +187,8 @@ class UCSDScheduleVisualizer{
                 const dayKey = daysKeys[i];
                 // split day keys
                 let days = dayKey.split("");
-                let timeStart = dayTime.substring(0, dayTime.indexOf("-"));
-                let timeStartHour = parseInt(timeStart.substring(0, timeStart.indexOf(":")));
-                if(timeStart.substring(timeStart.length - 1)==="p" && timeStartHour != 12){
-                    timeStartHour+=12;
-                }
-                let timeStartMin = parseInt(timeStart.substring(timeStart.indexOf(":")+1, timeStart.length - 1));
-    
-                let timeEnd = dayTime.substring(dayTime.indexOf("-")+1);
-                let timeEndHour = parseInt(timeEnd.substring(0, timeEnd.indexOf(":")));
-                if(timeEnd.substring(timeEnd.length - 1)==="p" && timeEndHour != 12){
-                    timeEndHour+=12;
-                }
-                let timeEndMin = parseInt(timeEnd.substring(timeEnd.indexOf(":")+1, timeEnd.length - 1));
-                
+                let dates = this.textToDates(dayTime);
+
                 for (let j = 0; j < days.length; j++) {
                     let dayCode = days[j];
                     // console.log(dayCode);
@@ -179,8 +200,8 @@ class UCSDScheduleVisualizer{
                     let eventObj = {
                         subject: value, 
                         day: dayCode, 
-                        dateStart: new Date(2015,7,17,timeStartHour,timeStartMin), 
-                        dateEnd: new Date(2015,7,17,timeEndHour, timeEndMin)
+                        dateStart: dates.start, 
+                        dateEnd: dates.end
                     };
                     this.currentSchedulePayloads.push(eventObj);
                     if(!this.currentSchedulePayloadsMap.has(dayCode)){
@@ -220,6 +241,38 @@ class UCSDScheduleVisualizer{
         eval(scriptTagContent);
     }
     
+    textToDays(daysText){
+        let o = [];
+        let days = daysText.split("");
+        for (let i = 0; i < days.length; i++) {
+            let dayCode = days[i];
+            if(!daysOfWeekCodes.includes(dayCode)){
+                dayCode += days[i + 1];
+                i++;
+            }
+            o.push(dayCode);
+        }
+        
+        return o;
+    }
+
+    textToDates(dateText){
+        let timeStart = dateText.substring(0, dateText.indexOf("-"));
+        let timeStartHour = parseInt(timeStart.substring(0, timeStart.indexOf(":")));
+        if(timeStart.substring(timeStart.length - 1)==="p" && timeStartHour != 12){
+            timeStartHour+=12;
+        }
+        let timeStartMin = parseInt(timeStart.substring(timeStart.indexOf(":")+1, timeStart.length - 1));
+
+        let timeEnd = dateText.substring(dateText.indexOf("-")+1);
+        let timeEndHour = parseInt(timeEnd.substring(0, timeEnd.indexOf(":")));
+        if(timeEnd.substring(timeEnd.length - 1)==="p" && timeEndHour != 12){
+            timeEndHour+=12;
+        }
+        let timeEndMin = parseInt(timeEnd.substring(timeEnd.indexOf(":")+1, timeEnd.length - 1));
+        return {start: new Date(2015,7,17,timeStartHour,timeStartMin), end: new Date(2015,7,17,timeEndHour,timeEndMin)};
+    }
+
     getCurrentScheduleMapFromPage(scope){
         let listOfScheduleRows = scope.getElementById("list-id-table").children[0].children;
     
@@ -279,24 +332,6 @@ class UCSDScheduleVisualizer{
                 classInfoObj.days = {};
             }
             classInfoObj.days[rowDays] = rowTime;
-            // let days = rowDays.split();
-            // let timeStart = rowTime.substring(0, rowTime.indexOf("-"));
-            // let timeStartHour = parseInt(timeStart.substring(0, timeStart.indexOf(":"))) + (timeStart.substring(timeStart.length - 1)==="a"?0:12)
-            // let timeStartMin = parseInt(timeStart.substring(timeStart.indexOf(":")+1, timeStart.length - 1));
-    
-            // let timeEnd = rowTime.substring(rowTime.indexOf("-")+1);
-            // let timeEndHour = parseInt(timeEnd.substring(0, timeEnd.indexOf(":"))) + (timeEnd.substring(timeStart.length - 1)==="a"?0:12)
-            // let timeEndMin = parseInt(timeEnd.substring(timeEnd.indexOf(":")+1, timeEnd.length - 1));
-            
-            // for (let j = 0; j < days.length; j++) {
-            //     const dayCode = days[j];
-            //     classInfoObj.days[dayCode] = {
-            //         startHour: timeStartHour,
-            //         startMin: timeStartMin,
-            //         endHour: timeEndHour,
-            //         endMin: timeEndMin
-            //     }
-            // }
         }
         return classInfo;
     }
