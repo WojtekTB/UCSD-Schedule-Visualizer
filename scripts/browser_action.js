@@ -62,6 +62,7 @@ class UCSDScheduleVisualizer{
     }
 
     whenHoverOverRow(event){
+        console.log(document.body.timetable.events);
         const row = event.target;
 
         const dayCell = row.querySelector('[aria-describedby="search-div-b-table_DAY_CODE"]');
@@ -82,6 +83,7 @@ class UCSDScheduleVisualizer{
         const days = this.textToDays(dayCell.innerHTML);
         for (let j = 0; j < days.length; j++) {
             let dayCode = days[j];
+            // console.log(this.tempClass.get(dayCode));
             this.tempClass.get(dayCode).startDate.setHours(timeStartHour, timeStartMin);
             this.tempClass.get(dayCode).endDate.setHours(timeEndHour, timeEndMin);
             //check if this overlaps with any of current classes
@@ -108,6 +110,7 @@ class UCSDScheduleVisualizer{
     updateCurrentSchedule(){
         // clear time table
         document.body.timetable.events = [];
+        document.body.visualizer.addTempClass();
         this.currentSchedulePayloads = [];
         this.currentSchedulePayloadsMap = new Map();
         this.pullCurrentSchedulePayloads();
@@ -175,21 +178,21 @@ class UCSDScheduleVisualizer{
         document.body.timetable = new Timetable();
         document.body.timetable.setScope(start,end);
         document.body.timetable.addLocations(daysOfWeekCodes);
-        this.addTempClass();
     }
 
     addTempClass(){
+        this.tempClass
         let addEventForDay = (day, scope)=>{
             scope.body.timetable.addEvent("Time Slot", day,
             new Date(2015,7,17,23,58),
             new Date(2015,7,17,23,59), 
             {class: "hoveredClass"}
             );
-            this.tempClass.set(day, scope.body.timetable.events[scope.body.timetable.events.length-1])
         }
         for (let i = 0; i < daysOfWeekCodes.length; i++) {
             const dayCode = daysOfWeekCodes[i];
             addEventForDay(dayCode, document);
+            this.tempClass.set(dayCode, document.body.timetable.events[document.body.timetable.events.length-1]);
         }
     }
 
