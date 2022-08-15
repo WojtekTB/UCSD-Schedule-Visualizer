@@ -18,6 +18,8 @@ class UCSDScheduleVisualizer{
         .then(()=>{
             // create table
             this.createTable(7, 23);
+            // set up button events
+            this.setUpButtonEvents();
             // sub all clicks to add new events so that we never miss them
             setInterval(this.addHoverEventToNewClassRows, 500);
             // update schedule
@@ -26,6 +28,13 @@ class UCSDScheduleVisualizer{
             this.renderTable();
             // console.log(document.body.timetable.events);
         });
+    }
+
+    setUpButtonEvents(){
+        document.getElementById("UPDATE_SCHEDULE").addEventListener("click", (e)=>{
+            document.body.visualizer.updateCurrentSchedule();
+            document.body.visualizer.renderTable();
+        })
     }
 
     addHoverEventToNewClassRows(){
@@ -85,7 +94,7 @@ class UCSDScheduleVisualizer{
 
     updateCurrentSchedule(){
         // clear time table
-        // document.body.timetable.events = [];
+        document.body.timetable.events = [];
         this.currentSchedulePayloads = [];
         this.currentSchedulePayloadsMap = new Map();
         this.pullCurrentSchedulePayloads();
@@ -135,14 +144,13 @@ class UCSDScheduleVisualizer{
                     this.currentSchedulePayloadsMap.set(days[i], []);
                 }
                 this.currentSchedulePayloadsMap.get(days[i]).push(eventObj);
-                
+
                 document.body.timetable.addEvent(
                     name, days[i], 
                     dates.start, dates.end
                     );
             }
         }
-        
     }
 
     renderTable(){
