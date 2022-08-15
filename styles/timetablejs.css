@@ -176,7 +176,7 @@ overflow-x: hidden;
 }
 
 .timetable .time-entry {
-    background-color: #ec6a5e;
+    background-color: yellowgreen;
     transition: background-color .2s;
     height: 24px !important;
     display: block;
@@ -199,12 +199,20 @@ overflow-x: hidden;
 }
 
 .timetable .time-entry:hover {
-    background-color: #e74030
+    background-color: yellowgreen
 }
 
 .hoveredClass{
     background-color: blue !important;
     z-index: 100 !important;
+    border: none !important;
+    height: 85% !important;
+}
+.hoveredClassOverlap{
+    background-color: red !important;
+    z-index: 100 !important;
+    border: none !important;
+    height: 85% !important;
 }
 time, [name="scrollheader"]{
     overflow: hidden !important;

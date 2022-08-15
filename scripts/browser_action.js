@@ -13,6 +13,7 @@ class UCSDScheduleVisualizer{
         // this is what defines the class that temporarily shows up when you hover
         this.tempClass = new Map();
         this.currentSchedulePayloads = [];
+        this.currentSchedulePayloadsMap = new Map();
         this.injectTableHTML(document)
         .then(()=>{
             // create table
@@ -73,6 +74,24 @@ class UCSDScheduleVisualizer{
             }
             this.tempClass.get(dayCode).startDate.setHours(timeStartHour, timeStartMin);
             this.tempClass.get(dayCode).endDate.setHours(timeEndHour, timeEndMin);
+            //check if this overlaps with any of current classes
+            let overlaps = false;
+            if(this.currentSchedulePayloadsMap.has(dayCode)){
+                let eventsThatDay = this.currentSchedulePayloadsMap.get(dayCode);
+                for (let j = 0; j < eventsThatDay.length; j++) {
+                    const event = eventsThatDay[j];
+                    const a_start = this.tempClass.get(dayCode).startDate, a_end = this.tempClass.get(dayCode).endDate
+                    const b_start = event.dateStart, b_end = event.dateEnd;
+                    console.log(`${a_start} - ${a_end} vs ${b_start} - ${b_end}`);
+                    console.log(a_start > b_start && a_start < b_end || b_start > a_start && b_start < a_end);
+                    if(a_start >= b_start && a_start <= b_end || b_start >= a_start && b_start <= a_end){
+                        overlaps = true;
+                        break;
+                    }
+                }
+            }
+            // console.log(overlaps);
+            this.tempClass.get(dayCode).options.class = overlaps? "hoveredClassOverlap": "hoveredClass";
         }
 
         this.renderTable();
@@ -82,6 +101,7 @@ class UCSDScheduleVisualizer{
         // clear time table
         // document.body.timetable.events = [];
         this.currentSchedulePayloads = [];
+        this.currentSchedulePayloadsMap = new Map();
         this.pullCurrentSchedulePayloads();
         for(let i = 0; i < this.currentSchedulePayloads.length; i++){
             let eventInfo = this.currentSchedulePayloads[i];
@@ -92,11 +112,7 @@ class UCSDScheduleVisualizer{
         }
     }
 
-    renderTable(payloadsToDraw){
-        // first add the current schedule payloads
-        
-        // now render payloads passed in
-
+    renderTable(){
         document.body.renderer = new Timetable.Renderer(document.body.timetable);
         document.body.renderer.draw('.timetable');
     }
@@ -160,12 +176,18 @@ class UCSDScheduleVisualizer{
                         j++;
                     }
                     // console.log(dayCode + " - " + timeStartHour);
-                    this.currentSchedulePayloads.push({
+                    let eventObj = {
                         subject: value, 
                         day: dayCode, 
                         dateStart: new Date(2015,7,17,timeStartHour,timeStartMin), 
                         dateEnd: new Date(2015,7,17,timeEndHour, timeEndMin)
-                    });
+                    };
+                    this.currentSchedulePayloads.push(eventObj);
+                    if(!this.currentSchedulePayloadsMap.has(dayCode)){
+                        this.currentSchedulePayloadsMap.set(dayCode, []);
+                    }
+                    this.currentSchedulePayloadsMap.get(dayCode).push(eventObj);
+
                 }
     
             }
