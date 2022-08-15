@@ -14,15 +14,12 @@
     "content_scripts": [
       {
         "matches": ["https://act.ucsd.edu/webreg2/*"],
-        "css": ["styles/timetablejs.css"]
+        "css": ["styles/timetablejs.css"],
+        "js": ["scripts/browser_action.js", "scripts/timetable.js"]
       }
     ],
     "browser_action": {
       "default_title": "Append Test Text"
-    },
-    "background": {
-      "persistent": false,
-      "scripts": ["scripts/background.js"]
     },
     "manifest_version": 2
 }
