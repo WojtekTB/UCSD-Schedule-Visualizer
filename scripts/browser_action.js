@@ -34,7 +34,20 @@ class UCSDScheduleVisualizer{
         document.getElementById("UPDATE_SCHEDULE").addEventListener("click", (e)=>{
             document.body.visualizer.updateCurrentSchedule();
             document.body.visualizer.renderTable();
-        })
+        });
+        document.getElementById("HIDE_SCHEDULE").addEventListener("click", (e)=>{
+            document.body.visualizer.hideTable();
+        });
+        document.getElementById("SHOW_SCHEDULE").addEventListener("click", (e)=>{
+            document.body.visualizer.showTable();
+        });
+    }
+
+    hideTable(){
+        document.body.timeTableWrapper.children[0].children[3].style.visibility = "hidden";
+    }
+    showTable(){
+        document.body.timeTableWrapper.children[0].children[3].style.visibility = "";
     }
 
     addHoverEventToNewClassRows(){
@@ -237,6 +250,7 @@ class UCSDScheduleVisualizer{
         let wrapper = document.createElement("div");
         wrapper.innerHTML = tableHTMLText;
         scope.body.appendChild(wrapper);
+        document.body.timeTableWrapper = wrapper;
     }
 
     forceExecuteScriptTags(tableHTMLText){
