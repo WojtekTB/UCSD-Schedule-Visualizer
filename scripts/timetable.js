@@ -241,9 +241,9 @@ function () {
             }
             function p(e) {
                 var t = m.scope.hourStart,
-                    n = e.startDate.getHours() + e.startDate.getMinutes() / 60,
+                    n = e.startDate.getHours() + (e.startDate.getMinutes() / 60) - t,
                     o = a(t, n);
-                return o / v * 100 + "%"
+                return n * 96 + "px"
             }
             var m = this.timetable,
                 v = a(m.scope.hourStart, m.scope.hourEnd),
