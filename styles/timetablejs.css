@@ -211,9 +211,9 @@ overflow-x: hidden;
 }
 
 .hoveredClass{
-    background-color: lightblue !important;
+    background-color: #2a94d5 !important;
     z-index: 100 !important;
-    border: 2px solid lightskyblue !important;
+    border: 2px solid #2a94d5 !important;
     height: 85% !important;
 }
 .hoveredClassOverlap{
