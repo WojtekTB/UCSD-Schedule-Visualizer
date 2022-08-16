@@ -183,6 +183,7 @@ overflow-x: hidden;
 }
 
 .timetable .time-entry {
+    white-space: nowrap !important;
     background-color: yellowgreen;
     transition: background-color .2s;
     height: 24px !important;
