@@ -55,7 +55,7 @@ overflow-x: hidden;
     content: "";
     display: block;
     background-image: linear-gradient(#e1ecff, #bcd6e6,#95afc9);
-    height: 30px;
+    height: 20px;
     position: relative;
     margin-top: -20px;
     top: 0
@@ -92,7 +92,7 @@ overflow-x: hidden;
 
 .timetable>section>header ul {
     display: flex;
-    height: 30px;
+    height: 20px;
     align-items: center
 }
 
