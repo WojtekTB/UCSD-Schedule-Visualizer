@@ -196,7 +196,6 @@ overflow-x: hidden;
     color: #fff;
     border: 2px solid #73AD21;
     transform-style: preserve-3d;
-    border-radius: 25px;
 }
 
 .timetable .time-entry small {
@@ -241,9 +240,9 @@ time, [name="scrollheader"]{
     display: inline-flex;
     fill: currentcolor;
     font-family: "Google Sans",Roboto,Arial,sans-serif;
-    font-size: 14px;
+    font-size: 11px;
     font-weight: 600;
-    height: 48px;
+    height: 20px;
     justify-content: center;
     letter-spacing: .25px;
     line-height: normal;
