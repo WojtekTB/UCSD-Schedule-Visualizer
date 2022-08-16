@@ -7,16 +7,16 @@
     <title>Document</title>
     <script src="scripts/timetable.js"></script>
     <link rel="stylesheet" href="styles/timetablejs.css">
-    
+    <link rel="stylesheet" href="styles/font.css">
 </head>
 <body>
     
     <!-- INJECTION ELEMENT START -->
 
     <div id="TimeTableContainer" style="position: fixed; top: 0; left: 0; width: 100%;" >
-        <button id="UPDATE_SCHEDULE">UPDATE</button>
-        <button id="HIDE_SCHEDULE">HIDE</button>
-        <button id="SHOW_SCHEDULE">SHOW</button>
+        <button id="UPDATE_SCHEDULE">UPDATE<span class="material-symbols-outlined">refresh</span></button>
+        <button id="SHOW_SCHEDULE">SHOW<span class="material-symbols-outlined">visibility</span></button>
+        <button id="HIDE_SCHEDULE">HIDE<span class="material-symbols-outlined">visibility_off</span></button>
         <div class="timetable"></div>
         <script id="evalThisScript">
             console.log("Adding timetable");

@@ -14,7 +14,7 @@
     "content_scripts": [
       {
         "matches": ["https://act.ucsd.edu/webreg2/*"],
-        "css": ["styles/timetablejs.css"],
+        "css": ["styles/timetablejs.css", "styles/font.css"],
         "js": ["scripts/browser_action.js", "scripts/timetable.js"]
       }
     ],
