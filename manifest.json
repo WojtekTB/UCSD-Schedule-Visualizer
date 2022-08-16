@@ -18,8 +18,5 @@
         "js": ["scripts/browser_action.js", "scripts/timetable.js"]
       }
     ],
-    "browser_action": {
-      "default_title": "Append Test Text"
-    },
     "manifest_version": 3
 }
