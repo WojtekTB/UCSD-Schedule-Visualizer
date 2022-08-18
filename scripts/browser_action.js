@@ -46,12 +46,12 @@ class UCSDScheduleVisualizer{
     hideTable(){
         let table = document.body.timeTableWrapper.children[0].children[3];
         table.style.visibility = "hidden";
-        table.start.zindex = "-100";
+        table.style.zIndex = "-100";
     }
     showTable(){
         let table = document.body.timeTableWrapper.children[0].children[3];
         table.style.visibility = "";
-        table.start.zindex = "100";
+        table.style.zIndex = "100";
     }
 
     addHoverEventToNewClassRows(){
