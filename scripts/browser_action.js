@@ -44,13 +44,15 @@ class UCSDScheduleVisualizer{
     }
 
     hideTable(){
-        let table = document.body.timeTableWrapper.children[0].children[3];
+        let table = document.body.timeTableWrapper.children[0].children[0];
         table.style.visibility = "hidden";
+        table.style.height = "0";
         table.style.zIndex = "-100";
     }
     showTable(){
-        let table = document.body.timeTableWrapper.children[0].children[3];
+        let table = document.body.timeTableWrapper.children[0].children[0];
         table.style.visibility = "";
+        table.style.height = "";
         table.style.zIndex = "100";
     }
 
