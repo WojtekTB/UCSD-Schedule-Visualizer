@@ -262,7 +262,8 @@ time, [name="scrollheader"]{
     touch-action: manipulation;
     width: auto;
     will-change: transform,opacity;
-    z-index: 0;
+    z-index: 100;
+    pointer-events: all;
 }
 
 #UPDATE_SCHEDULE:hover, #HIDE_SCHEDULE:hover, #SHOW_SCHEDULE:hover {
