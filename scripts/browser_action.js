@@ -326,7 +326,7 @@ class UCSDScheduleVisualizer{
             const rowStatus = rowCells[11].innerText;
             const rowAction = rowCells[12].innerText;
             
-            if(rowTitle === "Final Exam"){
+            if(rowTitle === "Final Exam" || rowTitle === "Midterm"){
                 // if final exam row, means this is the end of this subject
                 currentKey = null;
                 continue;
