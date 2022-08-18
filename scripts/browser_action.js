@@ -44,10 +44,14 @@ class UCSDScheduleVisualizer{
     }
 
     hideTable(){
-        document.body.timeTableWrapper.children[0].children[3].style.visibility = "hidden";
+        let table = document.body.timeTableWrapper.children[0].children[3];
+        table.style.visibility = "hidden";
+        table.start.zindex = "-100";
     }
     showTable(){
-        document.body.timeTableWrapper.children[0].children[3].style.visibility = "";
+        let table = document.body.timeTableWrapper.children[0].children[3];
+        table.style.visibility = "";
+        table.start.zindex = "100";
     }
 
     addHoverEventToNewClassRows(){
@@ -67,7 +71,7 @@ class UCSDScheduleVisualizer{
 
         const dayCell = row.querySelector('[aria-describedby="search-div-b-table_DAY_CODE"]');
         const timeCell = row.querySelector('[aria-describedby="search-div-b-table_coltime"]');
-        const dayTime = timeCell.innerHTML;
+        const dayTime = timeCell.innerText;
         
         // convert new dates
         let dates = this.textToDates(dayTime);
@@ -80,7 +84,7 @@ class UCSDScheduleVisualizer{
             this.tempClass.get(dayCode).startDate.setHours(23, 58);
             this.tempClass.get(dayCode).endDate.setHours(23, 59);
         }
-        const days = this.textToDays(dayCell.innerHTML);
+        const days = this.textToDays(dayCell.innerText);
         for (let j = 0; j < days.length; j++) {
             let dayCode = days[j];
             // console.log(this.tempClass.get(dayCode));
@@ -131,7 +135,7 @@ class UCSDScheduleVisualizer{
         }
         for (let i = 0; i < eventsListDiv.children[0].children.length; i++) {
             const eventRow = eventsListDiv.children[0].children[i];
-            if(!eventRow.cells[0].innerHTML){
+            if(!eventRow.cells[0].innerText){
                 // ignore rows where first cell is empty, prob a template that is not actually used
                 continue;
             }
@@ -308,19 +312,19 @@ class UCSDScheduleVisualizer{
             const row = listOfScheduleRows[i];
             const rowCells = row.children;
     
-            const rowSubject = rowCells[0].innerHTML;
-            const rowTitle = rowCells[1].innerHTML;
-            const rowSectionCode = rowCells[2].innerHTML;
-            const rowType = rowCells[3].innerHTML;
-            const rowInstructor = rowCells[4].innerHTML;
-            const rowGradeOption = rowCells[5].innerHTML;
-            const rowUnits = rowCells[6].innerHTML;
-            const rowDays = rowCells[7].innerHTML;
-            const rowTime = rowCells[8].innerHTML;
-            const rowBuilding = rowCells[9].innerHTML;
-            const rowRoom = rowCells[10].innerHTML;
-            const rowStatus = rowCells[11].innerHTML;
-            const rowAction = rowCells[12].innerHTML;
+            const rowSubject = rowCells[0].innerText;
+            const rowTitle = rowCells[1].innerText;
+            const rowSectionCode = rowCells[2].innerText;
+            const rowType = rowCells[3].innerText;
+            const rowInstructor = rowCells[4].innerText;
+            const rowGradeOption = rowCells[5].innerText;
+            const rowUnits = rowCells[6].innerText;
+            const rowDays = rowCells[7].innerText;
+            const rowTime = rowCells[8].innerText;
+            const rowBuilding = rowCells[9].innerText;
+            const rowRoom = rowCells[10].innerText;
+            const rowStatus = rowCells[11].innerText;
+            const rowAction = rowCells[12].innerText;
             
             if(rowTitle === "Final Exam"){
                 // if final exam row, means this is the end of this subject
