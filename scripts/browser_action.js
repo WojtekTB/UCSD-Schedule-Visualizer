@@ -76,41 +76,104 @@ class UCSDScheduleVisualizer{
     }
 
     whenHoverOverRow(event){
-        const row = event.target;
+        // find all rows that relate to the hovered class
+        const hoveredRow = event.target;
+        // look for id cell in the hovered row
+        const hoveredRowSectionNumberCell = hoveredRow.querySelector('[aria-describedby="search-div-b-table_SECTION_NUMBER"]');
 
-        const dayCell = row.querySelector('[aria-describedby="search-div-b-table_DAY_CODE"]');
-        const timeCell = row.querySelector('[aria-describedby="search-div-b-table_coltime"]');
-        const dayTime = timeCell.innerText;
+        if(!hoveredRowSectionNumberCell){
+            // can't parse row
+            return;
+        }
+
+        const rowSectionNumber = hoveredRowSectionNumberCell.innerText;
+        const rowId = parseInt(hoveredRow.id);
         
-        // convert new dates
-        let dates = this.textToDates(dayTime);
-        let timeStartHour = dates.start.getHours(), timeStartMin = dates.start.getMinutes();
-        let timeEndHour = dates.end.getHours(), timeEndMin = dates.end.getMinutes();
+        // look for all the rows with such id in the table
+        let allClassTableRows = [hoveredRow];
+        const table = hoveredRow.parentElement;
+        // look for related rows below
+        let lookUpId = rowId + 1;
+        let lookUpRow = table.querySelector(`[id="${lookUpId}"]`);
+        while (lookUpRow) {
+            const lookUpRowSectionNumberCell = lookUpRow.querySelector('[aria-describedby="search-div-b-table_SECTION_NUMBER"]');
+            if(!lookUpRowSectionNumberCell){
+                // does not have section number cell
+                break;
+            }
+            if(lookUpRowSectionNumberCell.innerText == rowSectionNumber){
+                // has the same id, thus add it to the row
+                allClassTableRows.push(lookUpRow);
+            }
+            else{
+                break;
+            }
 
+            // increment to next row
+            lookUpId++;
+            lookUpRow = table.querySelector(`[id="${lookUpId}"]`);
+        }
+        // look for related rows below
+        lookUpId = rowId - 1
+        lookUpRow = table.querySelector(`[id="${lookUpId}"]`);
+        while (lookUpRow) {
+            const lookUpRowSectionNumberCell = lookUpRow.querySelector('[aria-describedby="search-div-b-table_SECTION_NUMBER"]');
+            if(!lookUpRowSectionNumberCell){
+                // does not have section number cell
+                break;
+            }
+            if(lookUpRowSectionNumberCell.innerText == rowSectionNumber){
+                // has the same id, thus add it to the row
+                allClassTableRows.push(lookUpRow);
+            }
+            else{
+                break;
+            }
+
+            // increment to next row
+            lookUpId--;
+            lookUpRow = table.querySelector(`[id="${lookUpId}"]`);
+        }
+        
         // reset event times to be off screen
         this.hideAllHoveredClasses();
-        const days = this.textToDays(dayCell.innerText);
-        for (let j = 0; j < days.length; j++) {
-            let dayCode = days[j];
-            // console.log(this.tempClass.get(dayCode));
-            this.tempClass.get(dayCode).startDate.setHours(timeStartHour, timeStartMin);
-            this.tempClass.get(dayCode).endDate.setHours(timeEndHour, timeEndMin);
-            //check if this overlaps with any of current classes
-            let overlaps = false;
-            if(this.currentSchedulePayloadsMap.has(dayCode)){
-                let eventsThatDay = this.currentSchedulePayloadsMap.get(dayCode);
-                for (let j = 0; j < eventsThatDay.length; j++) {
-                    const event = eventsThatDay[j];
-                    const a_start = this.tempClass.get(dayCode).startDate, a_end = this.tempClass.get(dayCode).endDate
-                    const b_start = event.dateStart, b_end = event.dateEnd;
-                    if(a_start >= b_start && a_start <= b_end || b_start >= a_start && b_start <= a_end){
-                        overlaps = true;
-                        break;
+
+        // console.log(allClassTableRows);
+        for (let i = 0; i < allClassTableRows.length; i++) {
+            const row = allClassTableRows[i];
+            const dayCell = row.querySelector('[aria-describedby="search-div-b-table_DAY_CODE"]');
+            const timeCell = row.querySelector('[aria-describedby="search-div-b-table_coltime"]');
+            const dayTime = timeCell.innerText;
+            
+            // convert new dates
+            let dates = this.textToDates(dayTime);
+            let timeStartHour = dates.start.getHours(), timeStartMin = dates.start.getMinutes();
+            let timeEndHour = dates.end.getHours(), timeEndMin = dates.end.getMinutes();
+
+            
+            const days = this.textToDays(dayCell.innerText);
+            for (let j = 0; j < days.length; j++) {
+                let dayCode = days[j];
+                // console.log(this.tempClass.get(dayCode));
+                this.tempClass.get(dayCode).startDate.setHours(timeStartHour, timeStartMin);
+                this.tempClass.get(dayCode).endDate.setHours(timeEndHour, timeEndMin);
+                //check if this overlaps with any of current classes
+                let overlaps = false;
+                if(this.currentSchedulePayloadsMap.has(dayCode)){
+                    let eventsThatDay = this.currentSchedulePayloadsMap.get(dayCode);
+                    for (let j = 0; j < eventsThatDay.length; j++) {
+                        const event = eventsThatDay[j];
+                        const a_start = this.tempClass.get(dayCode).startDate, a_end = this.tempClass.get(dayCode).endDate
+                        const b_start = event.dateStart, b_end = event.dateEnd;
+                        if(a_start >= b_start && a_start <= b_end || b_start >= a_start && b_start <= a_end){
+                            overlaps = true;
+                            break;
+                        }
                     }
                 }
+                // console.log(overlaps);
+                this.tempClass.get(dayCode).options.class = overlaps? "hoveredClassOverlap": "hoveredClass";
             }
-            // console.log(overlaps);
-            this.tempClass.get(dayCode).options.class = overlaps? "hoveredClassOverlap": "hoveredClass";
         }
 
         this.renderTable();
