@@ -9,9 +9,8 @@ Only tested on UCSD WebReg.
   
   If you use Google chrome, Opera, Brave, Microsoft edge, or most other chromium based browsers you are likely able to just install the extension from google's web store: https://chrome.google.com/webstore/detail/ucsd-schedule-visualizer/jkaheldanccinoefddienccoblmcmhgn/related?hl=en&authuser=0
   
-  Otherwise you might have to install it manually.
 
-How to install:  
+How to install manually:  
 1. Download this repository.  
 2. Open extensions page in your browser.  
 3. Enable developer mode.  
