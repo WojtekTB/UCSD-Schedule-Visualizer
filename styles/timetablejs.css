@@ -210,6 +210,10 @@ overflow-x: hidden;
     background-color: yellowgreen
 }
 
+.unusedClass{
+    visibility: hidden !important;
+}
+
 .hoveredClass{
     background-color: #2a94d5 !important;
     z-index: 100 !important;
