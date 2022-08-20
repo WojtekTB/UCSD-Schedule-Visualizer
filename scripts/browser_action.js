@@ -68,8 +68,14 @@ class UCSDScheduleVisualizer{
         }
     }
 
+    hideAllHoveredClasses(){
+        for (let i = 0; i < daysOfWeekCodes.length; i++) {
+            const dayCode = daysOfWeekCodes[i];
+            this.tempClass.get(dayCode).options.class = "unusedClass";
+        }
+    }
+
     whenHoverOverRow(event){
-        console.log(document.body.timetable.events);
         const row = event.target;
 
         const dayCell = row.querySelector('[aria-describedby="search-div-b-table_DAY_CODE"]');
@@ -82,11 +88,7 @@ class UCSDScheduleVisualizer{
         let timeEndHour = dates.end.getHours(), timeEndMin = dates.end.getMinutes();
 
         // reset event times to be off screen
-        for (let i = 0; i < daysOfWeekCodes.length; i++) {
-            const dayCode = daysOfWeekCodes[i];
-            this.tempClass.get(dayCode).startDate.setHours(23, 58);
-            this.tempClass.get(dayCode).endDate.setHours(23, 59);
-        }
+        this.hideAllHoveredClasses();
         const days = this.textToDays(dayCell.innerText);
         for (let j = 0; j < days.length; j++) {
             let dayCode = days[j];
@@ -201,6 +203,8 @@ class UCSDScheduleVisualizer{
             addEventForDay(dayCode, document);
             this.tempClass.set(dayCode, document.body.timetable.events[document.body.timetable.events.length-1]);
         }
+        // now hide all of the classes
+        this.hideAllHoveredClasses();
     }
 
     pullCurrentSchedulePayloads(){
@@ -263,16 +267,6 @@ class UCSDScheduleVisualizer{
         document.body.timeTableWrapper = wrapper;
     }
 
-    forceExecuteScriptTags(tableHTMLText){
-        let startScriptTagIndex = tableHTMLText.indexOf(scriptTagStart) + scriptTagStart.length;
-        let endScriptTagIndex = startScriptTagIndex + tableHTMLText.substring(startScriptTagIndex).indexOf(scriptTagEnd)
-        let scriptTagContent = tableHTMLText.substring(
-            startScriptTagIndex, endScriptTagIndex
-        );
-        console.log(scriptTagContent);
-        eval(scriptTagContent);
-    }
-    
     textToDays(daysText){
         let o = [];
         let days = daysText.split("");
