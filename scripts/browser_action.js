@@ -50,6 +50,7 @@ class UCSDScheduleVisualizer{
         table.style.zIndex = "-100";
     }
     showTable(){
+        this.renderTable();
         let table = document.body.timeTableWrapper.children[0].children[0];
         table.style.visibility = "";
         table.style.height = "";
