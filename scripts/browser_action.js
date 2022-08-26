@@ -11,7 +11,7 @@ const daysOfWeekCodes = ['M', 'Tu', 'W', 'Th', 'F'];
 class UCSDScheduleVisualizer{
     constructor(){
         // this is what defines the class that temporarily shows up when you hover
-        this.tempClass = new Map();
+        this.hoveredTimeSlotDisplays = []; // holds objects that represent time slots that get displayed when you hover over a class
         this.currentSchedulePayloads = [];
         this.currentSchedulePayloadsMap = new Map();
         this.injectTableHTML(document)
@@ -28,6 +28,28 @@ class UCSDScheduleVisualizer{
             this.renderTable();
             // console.log(document.body.timetable.events);
         });
+    }
+
+    createNewTimeSlotDisplay(){
+        // add an event to be displayed
+        document.body.timetable.addEvent("Time Slot", daysOfWeekCodes[0],
+        new Date(2015,7,17,23,58),
+        new Date(2015,7,17,23,59), 
+        {class: "unusedClass"} // make it hidden by default
+        );
+        let timeSlotObj = document.body.timetable.events[document.body.timetable.events.length - 1];
+        // add that event obj and add it to the 
+        this.hoveredTimeSlotDisplays.push(timeSlotObj);
+        return timeSlotObj;
+    }
+
+    getUnusedTimeSlotDisplay(){
+        for(let i = 0; i < this.hoveredTimeSlotDisplays.length; i++){
+            if(this.hoveredTimeSlotDisplays[i].options.class === "unusedClass"){
+                return this.hoveredTimeSlotDisplays[i];
+            }
+        }
+        return this.createNewTimeSlotDisplay();
     }
 
     setUpButtonEvents(){
@@ -69,15 +91,14 @@ class UCSDScheduleVisualizer{
         }
     }
 
-    hideAllHoveredClasses(){
-        for (let i = 0; i < daysOfWeekCodes.length; i++) {
-            const dayCode = daysOfWeekCodes[i];
-            this.tempClass.get(dayCode).options.class = "unusedClass";
+    hideAllTimeSlotDisplays(){
+        for (let i = 0; i < this.hoveredTimeSlotDisplays.length; i++) {
+            this.hoveredTimeSlotDisplays[i].options.class = "unusedClass";
         }
     }
 
     whenEndHoverOverRow(event){
-        this.hideAllHoveredClasses();
+        this.hideAllTimeSlotDisplays();
         this.renderTable();
     }
 
@@ -142,7 +163,7 @@ class UCSDScheduleVisualizer{
         }
         
         // reset event times to be off screen
-        this.hideAllHoveredClasses();
+        this.hideAllTimeSlotDisplays();
 
         // console.log(allClassTableRows);
         for (let i = 0; i < allClassTableRows.length; i++) {
@@ -160,16 +181,22 @@ class UCSDScheduleVisualizer{
             const days = this.textToDays(dayCell.innerText);
             for (let j = 0; j < days.length; j++) {
                 let dayCode = days[j];
-                // console.log(this.tempClass.get(dayCode));
-                this.tempClass.get(dayCode).startDate.setHours(timeStartHour, timeStartMin);
-                this.tempClass.get(dayCode).endDate.setHours(timeEndHour, timeEndMin);
+
+                let freeTimeSlotDisplay = this.getUnusedTimeSlotDisplay();
+                
+                //set day
+                freeTimeSlotDisplay.location = dayCode;
+
+                //set hours
+                freeTimeSlotDisplay.startDate.setHours(timeStartHour, timeStartMin);
+                freeTimeSlotDisplay.endDate.setHours(timeEndHour, timeEndMin);
                 //check if this overlaps with any of current classes
                 let overlaps = false;
                 if(this.currentSchedulePayloadsMap.has(dayCode)){
                     let eventsThatDay = this.currentSchedulePayloadsMap.get(dayCode);
                     for (let j = 0; j < eventsThatDay.length; j++) {
                         const event = eventsThatDay[j];
-                        const a_start = this.tempClass.get(dayCode).startDate, a_end = this.tempClass.get(dayCode).endDate
+                        const a_start = freeTimeSlotDisplay.startDate, a_end = freeTimeSlotDisplay.endDate
                         const b_start = event.dateStart, b_end = event.dateEnd;
                         if(a_start >= b_start && a_start <= b_end || b_start >= a_start && b_start <= a_end){
                             overlaps = true;
@@ -178,7 +205,7 @@ class UCSDScheduleVisualizer{
                     }
                 }
                 // console.log(overlaps);
-                this.tempClass.get(dayCode).options.class = overlaps? "hoveredClassOverlap": "hoveredClass";
+                freeTimeSlotDisplay.options.class = overlaps? "hoveredClassOverlap": "hoveredClass";
             }
         }
 
@@ -188,7 +215,6 @@ class UCSDScheduleVisualizer{
     updateCurrentSchedule(){
         // clear time table
         document.body.timetable.events = [];
-        document.body.visualizer.addTempClass();
         this.currentSchedulePayloads = [];
         this.currentSchedulePayloadsMap = new Map();
         this.pullCurrentSchedulePayloads();
@@ -256,24 +282,6 @@ class UCSDScheduleVisualizer{
         document.body.timetable = new Timetable();
         document.body.timetable.setScope(start,end);
         document.body.timetable.addLocations(daysOfWeekCodes);
-    }
-
-    addTempClass(){
-        this.tempClass
-        let addEventForDay = (day, scope)=>{
-            scope.body.timetable.addEvent("Time Slot", day,
-            new Date(2015,7,17,23,58),
-            new Date(2015,7,17,23,59), 
-            {class: "hoveredClass"}
-            );
-        }
-        for (let i = 0; i < daysOfWeekCodes.length; i++) {
-            const dayCode = daysOfWeekCodes[i];
-            addEventForDay(dayCode, document);
-            this.tempClass.set(dayCode, document.body.timetable.events[document.body.timetable.events.length-1]);
-        }
-        // now hide all of the classes
-        this.hideAllHoveredClasses();
     }
 
     pullCurrentSchedulePayloads(){
