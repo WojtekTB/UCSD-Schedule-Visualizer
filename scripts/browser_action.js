@@ -64,6 +64,7 @@ class UCSDScheduleVisualizer{
             if(!dataRow.gotEventAttatched){
                 dataRow.gotEventAttatched = true;
                 dataRow.addEventListener("mouseenter", (event)=>document.body.visualizer.whenHoverOverRow(event), false);
+                dataRow.addEventListener("mouseleave", (event)=>document.body.visualizer.whenEndHoverOverRow(event), false);
             }
         }
     }
@@ -73,6 +74,11 @@ class UCSDScheduleVisualizer{
             const dayCode = daysOfWeekCodes[i];
             this.tempClass.get(dayCode).options.class = "unusedClass";
         }
+    }
+
+    whenEndHoverOverRow(event){
+        this.hideAllHoveredClasses();
+        this.renderTable();
     }
 
     whenHoverOverRow(event){
