@@ -8,6 +8,33 @@ const   scriptTagStart = '<script id="evalThisScript">',
 
 const daysOfWeekCodes = ['M', 'Tu', 'W', 'Th', 'F'];
 
+const mapURLStarter = "https://www.google.com/maps/dir/";
+const buildingToMapCode = {
+    "TM102":	`102+Marshall+College`,
+    "APM":	`Applied+Physics+and+Mathematics+Building`,
+    "CT":	`Catalyst+Building`,
+    "CENTR":	`Center+Hall`,
+    "CSB":	`Cognitive+Science+Building`,
+    "CICC":	`Copley+International+Conference+Center`,
+    "GH":	`Galbraith+Hall`,
+    "HSS":	`Humanities+and+Social+Sciences+Building`,
+    "LEDDN":	`Humanities+and+Social+Sciences+Building`,
+    "MANDE":	`Mandeville+Auditorium`,
+    "MCGIL":	`McGill+Hall`,
+    "MO":	`UCSD+Craft+Center`,
+    "PCYNH":	`Pepper+Canyon+Hall,+La+Jolla,+CA+92093`,
+    "PETER":	`UCSD+Peterson+Hall`,
+    "PRICE":	`Price+Center+at+UCSD`,
+    "RWAC":	`North+Torrey+Pines+Living+%26+Learning+Neighborhood`,
+    "RBC":	`Robinson+Auditorium`,
+    "SEQUO":	`Sequoyah+Hall`,
+    "SSB":	`Social+Sciences+Building`,
+    "SOLIS":	`Faustina+Solis+Lecture+Hall`,
+    "GA":	`The+Jeannie`,
+    "WLH":	`Warren+Lecture+Hall,+San+Diego,+CA`,
+    "YORK":	`York+Hall,+San+Diego,+CA+92161`
+}
+
 class UCSDScheduleVisualizer{
     constructor(){
         // this is what defines the class that temporarily shows up when you hover
