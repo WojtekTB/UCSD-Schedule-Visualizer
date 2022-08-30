@@ -2,23 +2,37 @@ class ScheduleGenerator {
     constructor() {
         this.currentTerm = null;
         this.courseSearches = new Map();
+        this.courseInfoJson = null;
+        this.generateScheduleFor([{SUBJ_CODE:"CSE", CRSE_CODE:"15L"}, {SUBJ_CODE:"CSE", CRSE_CODE:"101"}]);
     }
 
     // each obj in class list is {department: String, courseNumber: String}
     async generateScheduleFor(classList){
         // make sure that all the course searches are already in the map
+        let courses = await this.getAllClassSectionsJSON();
+        console.log(courses);
         for(let i = 0; i < classList.length; i++){
-            if(this.courseSearches.has(classList[i].department + classList[i].courseNumber)){
-                // if already have this class searched
-                continue;
+            let classId = classList[i].SUBJ_CODE + classList[i].CRSE_CODE;
+            if(!this.courseSearches.has(classId)){
+                this.courseSearches.set(classId, []);
             }
-            let courseSearch = await this.getClassSectionsJSON(classList[i].department, classList[i].courseNumber);
-            this.courseSearches.set(classList[i].department + classList[i].courseNumber, courseSearch);
+
+            //TODO turn this to binary search since courses are alphabetically sorted
+            for(let j = 0; j < courses.length; j++){
+                if(courses[j]["SUBJ_CODE"].trim() !== classList[i].SUBJ_CODE){
+                    continue;
+                }
+                if(courses[j]["CRSE_CODE"].trim() !== classList[i].CRSE_CODE){
+                    continue;
+                }
+                this.courseSearches.get(classId).push(courses[j]);
+            }
         }
-        for(let i = 0; i < classList.length; i++){
-            console.log(this.courseSearches.get(classList[i].department + classList[i].courseNumber));
-        }
+
+        // sorted courses we wanted to the map
+        console.log(this.courseSearches);
         
+        // create every possible class combo
     }
 
     // taken from webreg-main-min.js?v=19 in webreg page
@@ -39,23 +53,25 @@ class ScheduleGenerator {
     }
 
     // modified example from https://github.com/SheepTester/hello-world/blob/master/test/ucsd-brute-force-schedules.js
-    // ex: departmentCode: "CSE", courseNumber: "15L" for CSE 15L class
-    async getClassSectionsJSON(departmentCode, courseNumber) { 
-        return await fetch('https://act.ucsd.edu/webreg2/svc/wradapter/secure/search-by-all?' + new URLSearchParams({
-            subjcode: '',
-            crsecode: `${departmentCode}: ${courseNumber}`,
-            department: departmentCode,
-            professor: '',
-            title: '',
-            levels: '',
-            days: '',
-            timestr: '',
-            opensection: false,
-            isbasic: true,
-            basicsearchvalue: '',
-            termcode: this.getCurrentTerm()
-        })).then(r => r.json());
+    async getAllClassSectionsJSON() { 
+        if(this.courseInfoJson === null){
+            this.courseInfoJson = await fetch('https://act.ucsd.edu/webreg2/svc/wradapter/secure/search-by-all?' + new URLSearchParams({
+                subjcode: '',
+                crsecode: '',
+                department: '',
+                professor: '',
+                title: '',
+                levels: '',
+                days: '',
+                timestr: '',
+                opensection: false,
+                isbasic: true,
+                basicsearchvalue: '',
+                termcode: this.getCurrentTerm()
+            })).then(r => r.json());
+        }
+        return this.courseInfoJson;
     }
 }
 
-
+new ScheduleGenerator();
