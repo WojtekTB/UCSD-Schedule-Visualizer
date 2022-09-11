@@ -232,7 +232,7 @@ time, [name="scrollheader"]{
 }
 
 /* BUTTON UI */
-#UPDATE_SCHEDULE, #HIDE_SCHEDULE, #SHOW_SCHEDULE {
+.timeTableButton{
     align-items: center;
     appearance: none;
     background-color: #fff;
@@ -270,7 +270,7 @@ time, [name="scrollheader"]{
     pointer-events: all;
 }
 
-#UPDATE_SCHEDULE:hover, #HIDE_SCHEDULE:hover, #SHOW_SCHEDULE:hover {
+.timeTableButton:hover {
     background: #F6F9FE;
     color: #174ea6;
 }
