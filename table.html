@@ -15,9 +15,17 @@
 
     <div id="TimeTableContainer" style="position: fixed; top: 0; left: 0; width: 100vw; pointer-events: none;" >
         <div class="timetable"></div>
-        <button id="UPDATE_SCHEDULE">UPDATE<span class="material-symbols-outlined">refresh</span></button>
-        <button id="SHOW_SCHEDULE">SHOW<span class="material-symbols-outlined">visibility</span></button>
-        <button id="HIDE_SCHEDULE">HIDE<span class="material-symbols-outlined">visibility_off</span></button>
+        <div>
+            <button class = "timeTableButton" id="UPDATE_SCHEDULE">UPDATE<span class="material-symbols-outlined">refresh</span></button>
+            <button class = "timeTableButton" id="SHOW_SCHEDULE">SHOW<span class="material-symbols-outlined">visibility</span></button>
+            <button class = "timeTableButton" id="HIDE_SCHEDULE">HIDE<span class="material-symbols-outlined">visibility_off</span></button>
+            
+            <button class = "timeTableButton" id="M">M</button>
+            <button class = "timeTableButton" id="Tu">Tu</button>
+            <button class = "timeTableButton" id="W">W</button>
+            <button class = "timeTableButton" id="Th">Th</button>
+            <button class = "timeTableButton" id="F">F</button>
+        </div>
         <script id="evalThisScript">
             console.log("Adding timetable");
             var testTimetable = new Timetable();

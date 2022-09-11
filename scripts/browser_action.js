@@ -8,6 +8,36 @@ const   scriptTagStart = '<script id="evalThisScript">',
 
 const daysOfWeekCodes = ['M', 'Tu', 'W', 'Th', 'F'];
 
+const mapURLStarter = "https://www.google.com/maps/dir/";
+const buildingToMapCode = {
+    "TM102":	"102+Marshall+College",
+    "APM":	"Applied+Physics+and+Mathematics+Building",
+    "CT":	"Catalyst+Building",
+    "CENTR":	"Center+Hall",
+    "CSB":	"Cognitive+Science+Building",
+    "CICC":	"Copley+International+Conference+Center",
+    "GH":	"Galbraith+Hall",
+    "HSS":	"Humanities+and+Social+Sciences+Building",
+    "LEDDN":	"Humanities+and+Social+Sciences+Building",
+    "MANDE":	"Mandeville+Auditorium",
+    "MCGIL":	"McGill+Hall",
+    "MOS":	"UCSD+Craft+Center",
+    "PCYNH":	"Pepper+Canyon+Hall,+La+Jolla,+CA+92093",
+    "PETER":	"UCSD+Peterson+Hall",
+    "PRICE":	"Price+Center+at+UCSD",
+    "RWAC":	"North+Torrey+Pines+Living+%26+Learning+Neighborhood",
+    "RBC":	"Robinson+Auditorium",
+    "SEQUO":	"Sequoyah+Hall",
+    "SSB":	"Social+Sciences+Building",
+    "SOLIS":	"Faustina+Solis+Lecture+Hall",
+    "GA":	"The+Jeannie",
+    "WLH":	"Warren+Lecture+Hall,+San+Diego,+CA",
+    "YORK":	"York+Hall,+San+Diego,+CA+92161",
+    "CPMC":	"Conrad+Prebys+Music+Center",
+    "CTL":	"Catalyst+Building,+San+Diego,+CA+92037",
+    "DIB":	"Design+%26+Innovation+Building"
+}
+
 class UCSDScheduleVisualizer{
     constructor(){
         // this is what defines the class that temporarily shows up when you hover
@@ -27,7 +57,78 @@ class UCSDScheduleVisualizer{
             // render with just current schedule
             this.renderTable();
             // console.log(document.body.timetable.events);
+            // this.getScheduleMapLinkForDay("M");
         });
+    }
+
+    getScheduleMapLinkForDay(dayCode){
+        // TODO not efficient to redo this every time, make this get cached
+        // TODO better to actually reuse the code made for the actual schedule scan but too lazy to figure out how to generisize, maybe later
+        let currentClasses = this.getCurrentScheduleMapFromPage(document);
+
+        let dayToLocationsMap = new Map();
+
+        // itterate through each class and map (day) -> (list of class locations)
+        let classItterator = currentClasses.keys();
+        let classKey = classItterator.next().value;
+        let classObj = currentClasses.get(classKey);
+        while(classObj != undefined){
+            // split to list of days
+            console.log(classObj);
+            console.log(classObj.days)
+            let allDaysWithLocations = Object.keys(classObj.days);
+            
+            for(let i = 0; i < allDaysWithLocations.length; i++){
+                let timeAndBuilding = classObj.days[allDaysWithLocations[i]];
+
+                // go through every time the class has something going on
+                let individualDays = this.textToDays(allDaysWithLocations[i]);
+                for(let j = 0; j < individualDays.length; j++){
+                    if(!dayToLocationsMap.has(individualDays[j])){
+                        dayToLocationsMap.set(individualDays[j], []);
+                    }
+                    
+                    // add to list for that day
+                    dayToLocationsMap.get(individualDays[j]).push(timeAndBuilding);
+                }
+            }
+            
+            classKey = classItterator.next().value;
+            classObj = currentClasses.get(classKey);
+        }
+
+        // got all days sorted out with the events of the day
+        console.log(dayToLocationsMap);
+        
+        if(!dayToLocationsMap.has(dayCode)){
+            alert("No events that day!");
+            return;
+        }
+
+        let eventsThatDay = dayToLocationsMap.get(dayCode);
+
+        eventsThatDay.sort((a, b) => {
+            const aDates = this.textToDates(a.time);
+            const bDates = this.textToDates(b.time);
+            if (aDates.start < bDates.start) {
+              return -1;
+            }
+            if (aDates.start > bDates.start) {
+              return 1;
+            }
+            return 0;
+          });
+
+        console.log(eventsThatDay);
+
+        //build the map link
+        let mapLink = mapURLStarter;
+
+        for(let i = 0; i < eventsThatDay.length; i++){
+            mapLink += buildingToMapCode[eventsThatDay[i].building] + "+SAN+DIEGO/";
+        }
+        console.log(mapLink);
+        window.open(mapLink, "_blank");
     }
 
     createNewTimeSlotDisplay(){
@@ -62,6 +163,23 @@ class UCSDScheduleVisualizer{
         });
         document.getElementById("SHOW_SCHEDULE").addEventListener("click", (e)=>{
             document.body.visualizer.showTable();
+        });
+
+
+        document.getElementById("M").addEventListener("click", (e)=>{
+            document.body.visualizer.getScheduleMapLinkForDay("M");
+        });
+        document.getElementById("Tu").addEventListener("click", (e)=>{
+            document.body.visualizer.getScheduleMapLinkForDay("Tu");
+        });
+        document.getElementById("W").addEventListener("click", (e)=>{
+            document.body.visualizer.getScheduleMapLinkForDay("W");
+        });
+        document.getElementById("Th").addEventListener("click", (e)=>{
+            document.body.visualizer.getScheduleMapLinkForDay("Th");
+        });
+        document.getElementById("F").addEventListener("click", (e)=>{
+            document.body.visualizer.getScheduleMapLinkForDay("F");
         });
     }
 
@@ -295,7 +413,7 @@ class UCSDScheduleVisualizer{
             let classInfo = currentClasses.get(value);
             let daysKeys = Object.keys(classInfo.days);
             for (let i = 0; i < daysKeys.length; i++) {
-                const dayTime = classInfo.days[daysKeys[i]];
+                const dayTime = classInfo.days[daysKeys[i]].time;
                 const dayKey = daysKeys[i];
                 // split day keys
                 let days = dayKey.split("");
@@ -376,8 +494,8 @@ class UCSDScheduleVisualizer{
         return {start: new Date(2015,7,17,timeStartHour,timeStartMin), end: new Date(2015,7,17,timeEndHour,timeEndMin)};
     }
 
-    getCurrentScheduleMapFromPage(scope){
-        let listOfScheduleRows = scope.getElementById("list-id-table").children[0].children;
+    getCurrentScheduleMapFromPage(){
+        let listOfScheduleRows = document.getElementById("list-id-table").children[0].children;
     
         // I assume that the list can only ever 
         let classInfo = new Map();
@@ -405,6 +523,11 @@ class UCSDScheduleVisualizer{
                 currentKey = null;
                 continue;
             }
+            // if we are already tracking some class but now found row that is not "Final Exam" or "Midterm"
+            else if(currentKey !== null && rowTitle){
+                currentKey = null;
+                continue;
+            }
             // if there is a row title that is not "Final Exam" set it as currentKey
             else if(currentKey === null && rowTitle){
                 currentKey = rowSubject;
@@ -424,7 +547,7 @@ class UCSDScheduleVisualizer{
             classInfoObj.instructor = rowInstructor;
             classInfoObj.gradeOption = rowGradeOption;
             classInfoObj.units = rowUnits;
-            classInfoObj.building = rowBuilding;
+            // classInfoObj.building = rowBuilding;
             classInfoObj.room = rowRoom;
             classInfoObj.status = rowStatus;
             classInfoObj.action = rowAction;
@@ -434,7 +557,7 @@ class UCSDScheduleVisualizer{
             if(classInfoObj.days === undefined){
                 classInfoObj.days = {};
             }
-            classInfoObj.days[rowDays] = rowTime;
+            classInfoObj.days[rowDays] = {time: rowTime, building: rowBuilding};
         }
         return classInfo;
     }
