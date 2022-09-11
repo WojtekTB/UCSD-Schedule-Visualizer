@@ -1,7 +1,6 @@
 # UCSD-Schedule-Visualizer
-Important: Currently you have to click the extension button when you are looking at your WebReg.
   
-Extension that creates a timetable of your WebReg classes and shows you where the class you are hovering over would fit in your schedule. This uses timetable.js.  
+Extension that creates a timetable of your WebReg classes and shows you where the class you are hovering over would fit in your schedule. This uses timetable.js. It also allows you to quickly generate a google maps route of your classes.  
 The code is pretty jank, but if you want to fix that make a PR :)  
 Only tested on UCSD WebReg.
 ![image](https://user-images.githubusercontent.com/34536619/186992761-8b44ce84-bb98-41e9-961d-371190b636ab.png)
