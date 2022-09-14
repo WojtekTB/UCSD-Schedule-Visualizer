@@ -10,6 +10,8 @@ const daysOfWeekCodes = ['M', 'Tu', 'W', 'Th', 'F'];
 
 const mapURLStarter = "https://www.google.com/maps/dir/";
 const buildingToMapCode = {
+    "TBA":  "",
+    "EBU3B": "Computer+Science+and+Engineering+Building",
     "TM102":	"102+Marshall+College",
     "APM":	"Applied+Physics+and+Mathematics+Building",
     "CT":	"Catalyst+Building",
@@ -123,9 +125,14 @@ class UCSDScheduleVisualizer{
 
         //build the map link
         let mapLink = mapURLStarter;
-
+        let knownLocations = Object.keys(buildingToMapCode);
         for(let i = 0; i < eventsThatDay.length; i++){
-            mapLink += buildingToMapCode[eventsThatDay[i].building] + "+SAN+DIEGO/";
+            if(knownLocations.includes(eventsThatDay[i].building)){
+                mapLink += buildingToMapCode[eventsThatDay[i].building] + "+SAN+DIEGO/";
+            }
+            else{
+                mapLink += eventsThatDay[i].building + "+SAN+DIEGO/";
+            }
         }
         console.log(mapLink);
         window.open(mapLink, "_blank");
