@@ -1,7 +1,7 @@
 {
     "name": "UCSD Schedule Visualizer",
     "description": "Help quickly visualize UCSD schedule.",
-    "version": "1.8.1",
+    "version": "1.8.2",
     "icons":{"128":"ucsd-icon-128.png"},
     "permissions": [
       "activeTab"

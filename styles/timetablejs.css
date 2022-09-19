@@ -190,7 +190,7 @@ overflow-x: hidden;
     display: block;
     position: absolute;
     z-index: 2;
-    padding: 0 10px;
+    padding: 0 2px;
     white-space: normal;
     overflow-y: hidden;
     overflow-x: hidden;
