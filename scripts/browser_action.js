@@ -418,10 +418,9 @@ class UCSDScheduleVisualizer{
         let classSubject = keyItterator.next().value;
         while(classSubject != undefined){
             let classInfo = currentClasses.get(classSubject);
-            let daysKeys = Object.keys(classInfo.days);
-            for (let i = 0; i < daysKeys.length; i++) {
-                const dayTime = classInfo.days[daysKeys[i]].time;
-                const dayKey = daysKeys[i];
+            for (let i = 0; i < classInfo.days.length; i++) {
+                const dayTime = classInfo.days[i].time;
+                const dayKey = classInfo.days[i].days;
                 // split day keys
                 let days = dayKey.split("");
                 let dates = this.textToDates(dayTime);
@@ -435,7 +434,7 @@ class UCSDScheduleVisualizer{
                     }
                     // console.log(dayCode + " - " + timeStartHour);
                     let eventObj = {
-                        subject: `${classSubject.trim()} (${classInfo.days[dayKey].building})`, 
+                        subject: `${classSubject.trim()} (${classInfo.days[i].building})`, 
                         day: dayCode, 
                         dateStart: dates.start, 
                         dateEnd: dates.end
@@ -562,9 +561,9 @@ class UCSDScheduleVisualizer{
             // handle times and days separately
     
             if(classInfoObj.days === undefined){
-                classInfoObj.days = {};
+                classInfoObj.days = [];
             }
-            classInfoObj.days[rowDays] = {time: rowTime, building: rowBuilding};
+            classInfoObj.days.push({ days: rowDays, time: rowTime, building: rowBuilding});
         }
         return classInfo;
     }
