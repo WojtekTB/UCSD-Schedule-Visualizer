@@ -184,7 +184,6 @@ overflow-x: hidden;
 
 .timetable .time-entry {
     white-space: nowrap !important;
-    background-color: yellowgreen;
     transition: background-color .2s;
     height: 24px !important;
     display: block;
@@ -194,8 +193,6 @@ overflow-x: hidden;
     white-space: normal;
     overflow-y: hidden;
     overflow-x: hidden;
-    color: #fff;
-    border: 2px solid #73AD21;
     transform-style: preserve-3d;
 }
 
@@ -207,7 +204,6 @@ overflow-x: hidden;
 }
 
 .timetable .time-entry:hover {
-    background-color: yellowgreen
 }
 
 .unusedClass{
@@ -273,4 +269,25 @@ time, [name="scrollheader"]{
 .timeTableButton:hover {
     background: #F6F9FE;
     color: #174ea6;
+}
+
+.timeSlotEnrolled{
+    border-style: solid;
+    border: 1px solid #a6c9e2;
+    background-color: rgb(64, 121, 142);
+    color: white;
+}
+
+.timeSlotWaitlisted{
+    border-style: solid;
+    border: 1px solid #a6c9e2;
+    background-color: #ccffff;
+    color: #222222;
+}
+
+.timeSlotPlanned{
+    border-style: solid;
+    border: 1px solid #a6c9e2;
+    background: #FFFFFF;
+    color: #A0A0A0;
 }

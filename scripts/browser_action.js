@@ -63,6 +63,10 @@ class UCSDScheduleVisualizer{
         });
     }
 
+    addToGoogleCalendar(){
+        
+    }
+
     getScheduleMapLinkForDay(dayCode){
         // TODO not efficient to redo this every time, make this get cached
         // TODO better to actually reuse the code made for the actual schedule scan but too lazy to figure out how to generisize, maybe later
@@ -345,10 +349,28 @@ class UCSDScheduleVisualizer{
         this.pullCurrentSchedulePayloads();
         for(let i = 0; i < this.currentSchedulePayloads.length; i++){
             let eventInfo = this.currentSchedulePayloads[i];
-            document.body.timetable.addEvent(
-                eventInfo.subject, eventInfo.day, 
-                eventInfo.dateStart, eventInfo.dateEnd
-                );
+            
+            // decide class name
+            const isWaitlist = eventInfo.status.toLowerCase().includes("waitlist");
+            const isEnrolled = eventInfo.status.toLowerCase().includes("enrolled");
+            const isPlanned = eventInfo.status.toLowerCase().includes("planned");
+
+            let className;
+            if(isWaitlist) className = "timeSlotWaitlisted";
+            if(isEnrolled) className = "timeSlotEnrolled";
+            if(isPlanned) className = "timeSlotPlanned";
+
+            if(daysOfWeekCodes.includes(eventInfo.day)){
+                document.body.timetable.addEvent(
+                    eventInfo.subject, eventInfo.day, 
+                    eventInfo.dateStart, eventInfo.dateEnd,
+                    {class: className}
+                    );
+            }
+            else{
+                console.error(eventInfo);
+            }
+            
         }
         // check if there are any personal events (non classes)
         let eventsListDiv = document.getElementById("list-id-event");
@@ -438,7 +460,8 @@ class UCSDScheduleVisualizer{
                         subject: `${classSubject.trim()} (${classInfo.days[dayKey].building})`, 
                         day: dayCode, 
                         dateStart: dates.start, 
-                        dateEnd: dates.end
+                        dateEnd: dates.end,
+                        status: classInfo.status
                     };
                     this.currentSchedulePayloads.push(eventObj);
                     if(!this.currentSchedulePayloadsMap.has(dayCode)){
@@ -556,7 +579,14 @@ class UCSDScheduleVisualizer{
             classInfoObj.units = rowUnits;
             // classInfoObj.building = rowBuilding;
             classInfoObj.room = rowRoom;
-            classInfoObj.status = rowStatus;
+            if(classInfoObj.status){
+                if(classInfoObj.status.length < rowStatus){
+                    classInfoObj.status = rowStatus;
+                }
+            }
+            else{
+                classInfoObj.status = rowStatus;
+            }
             classInfoObj.action = rowAction;
     
             // handle times and days separately
