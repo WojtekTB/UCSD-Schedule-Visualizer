@@ -8,6 +8,12 @@ const   scriptTagStart = '<script id="evalThisScript">',
 
 const daysOfWeekCodes = ['M', 'Tu', 'W', 'Th', 'F'];
 
+const STATUSES = {
+    enrolled: "enrolled",
+    waitlisted: "waitlist",
+    planned: "planned"
+}
+
 const mapURLStarter = "https://www.google.com/maps/dir/";
 const buildingToMapCode = {
     "TBA":  "",
@@ -382,6 +388,15 @@ class UCSDScheduleVisualizer{
                     let eventsThatDay = this.currentSchedulePayloadsMap.get(dayCode);
                     for (let j = 0; j < eventsThatDay.length; j++) {
                         const event = eventsThatDay[j];
+                        if(event.status == STATUSES.enrolled && !this.showEnrolled){
+                            continue;
+                        }
+                        if(event.status == STATUSES.waitlisted && !this.showWaitlisted){
+                            continue;
+                        }
+                        if(event.status == STATUSES.planned && !this.showPlanned){
+                            continue;
+                        }
                         const a_start = freeTimeSlotDisplay.startDate, a_end = freeTimeSlotDisplay.endDate
                         const b_start = event.dateStart, b_end = event.dateEnd;
                         if(a_start >= b_start && a_start <= b_end || b_start >= a_start && b_start <= a_end){
@@ -405,7 +420,7 @@ class UCSDScheduleVisualizer{
         this.currentSchedulePayloadsMap = new Map();
         this.pullCurrentSchedulePayloads();
 
-        const drawPriority = ["planned", "waitlist", "enrolled"];
+        const drawPriority = [STATUSES.planned, STATUSES.waitlisted, STATUSES.enrolled];
         const drawPriorityToggleBools = [this.showPlanned, this.showWaitlisted, this.showEnrolled];
         const drawPriorityCssClasses = ["timeSlotPlanned", "timeSlotWaitlisted", "timeSlotEnrolled"];
         
@@ -415,7 +430,7 @@ class UCSDScheduleVisualizer{
             }
             for(let i = 0; i < this.currentSchedulePayloads.length; i++){
                 let eventInfo = this.currentSchedulePayloads[i];
-                const shouldDraw = eventInfo.status.toLowerCase().includes(drawPriority[j]);
+                const shouldDraw = eventInfo.status == drawPriority[j];
                 // console.log(`Checking for ${drawPriority[j]} in ${eventInfo.status.toLowerCase()}: ${shouldDraw}`);
                 if(shouldDraw){
                     if(daysOfWeekCodes.includes(eventInfo.day)){
@@ -621,7 +636,11 @@ class UCSDScheduleVisualizer{
             }
             // if there is a row title that is not "Final Exam" set it as currentKey
             else if(currentKey === null && rowTitle){
-                currentKey = rowSubject;
+                currentKey = rowSubject.trim();
+                // if nothing, then skip it (why is that even happening???)
+                if(currentKey.length == 0){
+                    continue;
+                }
                 classInfo.set(currentKey, {title: rowTitle});
             }
     
@@ -640,13 +659,13 @@ class UCSDScheduleVisualizer{
             classInfoObj.units = rowUnits;
             // classInfoObj.building = rowBuilding;
             classInfoObj.room = rowRoom;
-            if(classInfoObj.status){
-                if(classInfoObj.status.length < rowStatus){
-                    classInfoObj.status = rowStatus;
+            if(classInfoObj.statusString){
+                if(classInfoObj.statusString.length < rowStatus){
+                    classInfoObj.statusString = rowStatus;
                 }
             }
             else{
-                classInfoObj.status = rowStatus;
+                classInfoObj.statusString = rowStatus;
             }
             classInfoObj.action = rowAction;
     
@@ -657,6 +676,25 @@ class UCSDScheduleVisualizer{
             }
             classInfoObj.days[rowDays] = {time: rowTime, building: rowBuilding};
         }
+
+        let classInfoKeys = Array.from(classInfo.keys());
+        for (let i = 0; i < classInfoKeys.length; i++) {
+            const classInfoKey = classInfoKeys[i];
+            let cleanedStatusString = classInfo.get(classInfoKey).statusString.toLowerCase();
+            let trueStatus;
+            if(cleanedStatusString.includes(STATUSES.enrolled)){
+                trueStatus = STATUSES.enrolled;
+            }
+            else if(cleanedStatusString.includes(STATUSES.waitlisted)){
+                trueStatus = STATUSES.waitlisted;
+            }
+            else if(cleanedStatusString.includes(STATUSES.planned)){
+                trueStatus = STATUSES.planned;
+            }
+            classInfo.get(classInfoKey).status = trueStatus;
+            // console.table({classInfoKey, trueStatus})
+        }
+
         return classInfo;
     }
 }
