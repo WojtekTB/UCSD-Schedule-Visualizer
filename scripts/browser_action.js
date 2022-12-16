@@ -42,6 +42,14 @@ const buildingToMapCode = {
 
 class UCSDScheduleVisualizer{
     constructor(){
+        if(!document.getElementById("list-id-table")){
+            // if do not see a table, then don't do anything
+            return;
+        }
+
+        this.showEnrolled = true;
+        this.showWaitlisted = true;
+        this.showPlanned = true;
         // this is what defines the class that temporarily shows up when you hover
         this.hoveredTimeSlotDisplays = []; // holds objects that represent time slots that get displayed when you hover over a class
         this.currentSchedulePayloads = [];
@@ -58,8 +66,6 @@ class UCSDScheduleVisualizer{
             this.updateCurrentSchedule();
             // render with just current schedule
             this.renderTable();
-            // console.log(document.body.timetable.events);
-            // this.getScheduleMapLinkForDay("M");
         });
     }
 
@@ -80,8 +86,6 @@ class UCSDScheduleVisualizer{
         let classObj = currentClasses.get(classKey);
         while(classObj != undefined){
             // split to list of days
-            console.log(classObj);
-            console.log(classObj.days)
             let allDaysWithLocations = Object.keys(classObj.days);
             
             for(let i = 0; i < allDaysWithLocations.length; i++){
@@ -113,6 +117,7 @@ class UCSDScheduleVisualizer{
 
         let eventsThatDay = dayToLocationsMap.get(dayCode);
 
+        // sort by date
         eventsThatDay.sort((a, b) => {
             const aDates = this.textToDates(a.time);
             const bDates = this.textToDates(b.time);
@@ -131,10 +136,14 @@ class UCSDScheduleVisualizer{
         let mapLink = mapURLStarter;
         let knownLocations = Object.keys(buildingToMapCode);
         for(let i = 0; i < eventsThatDay.length; i++){
+            console.log(eventsThatDay[i]);
+            // if the event is something weird, don't do anything
+            if(daysOfWeekCodes.includes(eventInfo.day)){}
             if(knownLocations.includes(eventsThatDay[i].building)){
                 mapLink += buildingToMapCode[eventsThatDay[i].building] + "+SAN+DIEGO/";
             }
             else{
+                // if don't have key for this building code, just google it + san diego
                 mapLink += eventsThatDay[i].building + "+SAN+DIEGO/";
             }
         }
@@ -149,7 +158,7 @@ class UCSDScheduleVisualizer{
         new Date(2015,7,17,23,59), 
         {class: "unusedClass"} // make it hidden by default
         );
-        let timeSlotObj = document.body.timetable.events[document.body.timetable.events.length - 1];
+        const timeSlotObj = document.body.timetable.events[document.body.timetable.events.length - 1];
         // add that event obj and add it to the 
         this.hoveredTimeSlotDisplays.push(timeSlotObj);
         return timeSlotObj;
@@ -169,11 +178,11 @@ class UCSDScheduleVisualizer{
             document.body.visualizer.updateCurrentSchedule();
             document.body.visualizer.renderTable();
         });
-        document.getElementById("HIDE_SCHEDULE").addEventListener("click", (e)=>{
-            document.body.visualizer.hideTable();
-        });
+        // document.getElementById("HIDE_SCHEDULE").addEventListener("click", (e)=>{
+        //     document.body.visualizer.hideTable();
+        // });
         document.getElementById("SHOW_SCHEDULE").addEventListener("click", (e)=>{
-            document.body.visualizer.showTable();
+            document.body.visualizer.toggleTable();
         });
 
 
@@ -192,6 +201,48 @@ class UCSDScheduleVisualizer{
         document.getElementById("F").addEventListener("click", (e)=>{
             document.body.visualizer.getScheduleMapLinkForDay("F");
         });
+
+        document.getElementById("enrolled").addEventListener("click", (e)=>{
+            document.body.visualizer.toggleEnrolled(e.target.checked)
+        });
+        document.getElementById("waitlisted").addEventListener("click", (e)=>{
+            document.body.visualizer.toggleWaitlisted(e.target.checked)
+        });
+        document.getElementById("planned").addEventListener("click", (e)=>{
+            document.body.visualizer.togglePlanned(e.target.checked)
+        });
+    }
+
+    toggleEnrolled(checked){
+        document.body.visualizer.showEnrolled = checked;
+        document.body.visualizer.updateCurrentSchedule();
+        document.body.visualizer.renderTable();
+    }
+    toggleWaitlisted(checked){
+        document.body.visualizer.showWaitlisted = checked;
+        document.body.visualizer.updateCurrentSchedule();
+        document.body.visualizer.renderTable();
+
+    }
+    togglePlanned(checked){
+        document.body.visualizer.showPlanned = checked;
+        document.body.visualizer.updateCurrentSchedule();
+        document.body.visualizer.renderTable();
+    }
+
+    toggleTable(){
+        let table = document.body.timeTableWrapper.children[0].children[0];
+        table.showTable = !table.showTable;
+        if(table.showTable){
+            table.style.visibility = "hidden";
+            table.style.height = "0";
+            table.style.zIndex = "-100";
+        }
+        else{
+            table.style.visibility = "";
+            table.style.height = "";
+            table.style.zIndex = "100";
+        }
     }
 
     hideTable(){
@@ -212,11 +263,17 @@ class UCSDScheduleVisualizer{
         let searchDataRows = document.getElementsByClassName("wr-search-group-data-row");
         for (let i = 0; i < searchDataRows.length; i++) {
             const dataRow = searchDataRows[i];
+            if(dataRow["hasEvents"]){
+                continue;
+            }
+            // TODO can use this later to figure out if the row is FINAL or MIDTERM and then ignore it if it is
+            // console.log(dataRow.innerText);
             if(!dataRow.gotEventAttatched){
                 dataRow.gotEventAttatched = true;
                 dataRow.addEventListener("mouseenter", (event)=>document.body.visualizer.whenHoverOverRow(event), false);
                 dataRow.addEventListener("mouseleave", (event)=>document.body.visualizer.whenEndHoverOverRow(event), false);
             }
+            dataRow["hasEvents"] = true;
         }
     }
 
@@ -270,7 +327,7 @@ class UCSDScheduleVisualizer{
             lookUpRow = table.querySelector(`[id="${lookUpId}"]`);
         }
         // look for related rows below
-        lookUpId = rowId - 1
+        lookUpId = rowId - 1;
         lookUpRow = table.querySelector(`[id="${lookUpId}"]`);
         while (lookUpRow) {
             const lookUpRowSectionNumberCell = lookUpRow.querySelector('[aria-describedby="search-div-b-table_SECTION_NUMBER"]');
@@ -337,41 +394,44 @@ class UCSDScheduleVisualizer{
                 freeTimeSlotDisplay.options.class = overlaps? "hoveredClassOverlap": "hoveredClass";
             }
         }
-
         this.renderTable();
     }
 
     updateCurrentSchedule(){
         // clear time table
         document.body.timetable.events = [];
+        this.hoveredTimeSlotDisplays = [];
         this.currentSchedulePayloads = [];
         this.currentSchedulePayloadsMap = new Map();
         this.pullCurrentSchedulePayloads();
-        for(let i = 0; i < this.currentSchedulePayloads.length; i++){
-            let eventInfo = this.currentSchedulePayloads[i];
-            
-            // decide class name
-            const isWaitlist = eventInfo.status.toLowerCase().includes("waitlist");
-            const isEnrolled = eventInfo.status.toLowerCase().includes("enrolled");
-            const isPlanned = eventInfo.status.toLowerCase().includes("planned");
 
-            let className;
-            if(isWaitlist) className = "timeSlotWaitlisted";
-            if(isEnrolled) className = "timeSlotEnrolled";
-            if(isPlanned) className = "timeSlotPlanned";
-
-            if(daysOfWeekCodes.includes(eventInfo.day)){
-                document.body.timetable.addEvent(
-                    eventInfo.subject, eventInfo.day, 
-                    eventInfo.dateStart, eventInfo.dateEnd,
-                    {class: className}
-                    );
+        const drawPriority = ["planned", "waitlist", "enrolled"];
+        const drawPriorityToggleBools = [this.showPlanned, this.showWaitlisted, this.showEnrolled];
+        const drawPriorityCssClasses = ["timeSlotPlanned", "timeSlotWaitlisted", "timeSlotEnrolled"];
+        
+        for(let j = 0; j < drawPriority.length; j++){
+            if(!drawPriorityToggleBools[j]){
+                continue;
             }
-            else{
-                console.error(eventInfo);
+            for(let i = 0; i < this.currentSchedulePayloads.length; i++){
+                let eventInfo = this.currentSchedulePayloads[i];
+                const shouldDraw = eventInfo.status.toLowerCase().includes(drawPriority[j]);
+                // console.log(`Checking for ${drawPriority[j]} in ${eventInfo.status.toLowerCase()}: ${shouldDraw}`);
+                if(shouldDraw){
+                    if(daysOfWeekCodes.includes(eventInfo.day)){
+                        document.body.timetable.addEvent(
+                            eventInfo.subject, eventInfo.day, 
+                            eventInfo.dateStart, eventInfo.dateEnd,
+                            {class: drawPriorityCssClasses[j]}
+                            );
+                    }
+                    else{
+                        console.error(eventInfo);
+                    }
+                }
             }
-            
         }
+
         // check if there are any personal events (non classes)
         let eventsListDiv = document.getElementById("list-id-event");
         if(eventsListDiv === null){
@@ -414,7 +474,8 @@ class UCSDScheduleVisualizer{
 
                 document.body.timetable.addEvent(
                     name, days[i], 
-                    dates.start, dates.end
+                    dates.start, dates.end,
+                    {class: "timeSlotPersonalEvent"}
                     );
             }
         }
