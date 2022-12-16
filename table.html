@@ -13,41 +13,44 @@
     
     <!-- INJECTION ELEMENT START -->
 
-    <div class="timetableContainer" id="TimeTableContainer">
-        <div class="timetable"></div>
-        <div style="display: flex; align-items: center;">
-            <button class="timeTableUIContainer timeTableButton" id="UPDATE_SCHEDULE"><span class="material-symbols-outlined">refresh</span></button>
-            <button class="timeTableUIContainer timeTableButton" id="SHOW_SCHEDULE"><span class="material-symbols-outlined">visibility</span></button>
-            
-            <div class="timeTableUIContainer">
-                <input class="timeTableCheckbox" id="enrolled" type="checkbox" checked>
-                <label class="timeTableCheckboxLable" for="enrolled">Enrolled</label>
-
-                <input class="timeTableCheckbox" id="waitlisted" type="checkbox" checked>
-                <label class="timeTableCheckboxLable" for="waitlisted">Waitlisted</label>
-
-                <input class="timeTableCheckbox" id="planned" type="checkbox" checked>
-                <label class="timeTableCheckboxLable" for="planned">Planned</label>
+    <div class="topAlignedContainer">
+        <div class="timetableContainer" id="TimeTableContainer">
+            <div class="timetable"></div>
+            <div style="display: flex; align-items: center;">
+                <button class="timeTableUIContainer timeTableButton" id="UPDATE_SCHEDULE"><span class="material-symbols-outlined">refresh</span></button>
+                <button class="timeTableUIContainer timeTableButton" id="SHOW_SCHEDULE"><span class="material-symbols-outlined">visibility</span></button>
+                
+                <div class="timeTableUIContainer">
+                    <input class="timeTableCheckbox" id="enrolled" type="checkbox" checked>
+                    <label class="timeTableCheckboxLable" for="enrolled">Enrolled</label>
+    
+                    <input class="timeTableCheckbox" id="waitlisted" type="checkbox" checked>
+                    <label class="timeTableCheckboxLable" for="waitlisted">Waitlisted</label>
+    
+                    <input class="timeTableCheckbox" id="planned" type="checkbox" checked>
+                    <label class="timeTableCheckboxLable" for="planned">Planned</label>
+                </div>
+    
+                <button class="timeTableUIContainer timeTableButton" id="M">M</button>
+                <button class="timeTableUIContainer timeTableButton" id="Tu">Tu</button>
+                <button class="timeTableUIContainer timeTableButton" id="W">W</button>
+                <button class="timeTableUIContainer timeTableButton" id="Th">Th</button>
+                <button class="timeTableUIContainer timeTableButton" id="F">F</button>
             </div>
-
-            <button class="timeTableUIContainer timeTableButton" id="M">M</button>
-            <button class="timeTableUIContainer timeTableButton" id="Tu">Tu</button>
-            <button class="timeTableUIContainer timeTableButton" id="W">W</button>
-            <button class="timeTableUIContainer timeTableButton" id="Th">Th</button>
-            <button class="timeTableUIContainer timeTableButton" id="F">F</button>
+            <script id="evalThisScript">
+                console.log("Adding timetable");
+                var testTimetable = new Timetable();
+          
+                testTimetable.setScope(9,23);
+                testTimetable.addLocations(['Silent Disco', 'Nile', 'Len Room', 'Maas Room']);
+                testTimetable.addEvent('Frankadelic', 'Nile', new Date(2015,7,17,10,0), new Date(2015,7,17,12,0));
+                // testTimetable.addLocations(['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']);
+                var renderer = new Timetable.Renderer(testTimetable);
+                renderer.draw('.timetable');
+            </script>
         </div>
-        <script id="evalThisScript">
-            console.log("Adding timetable");
-            var testTimetable = new Timetable();
-      
-            testTimetable.setScope(9,23);
-            testTimetable.addLocations(['Silent Disco', 'Nile', 'Len Room', 'Maas Room']);
-            testTimetable.addEvent('Frankadelic', 'Nile', new Date(2015,7,17,10,0), new Date(2015,7,17,12,0));
-            // testTimetable.addLocations(['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']);
-            var renderer = new Timetable.Renderer(testTimetable);
-            renderer.draw('.timetable');
-        </script>
     </div>
+
 
     <!-- INJECTION ELEMENT END -->
 
