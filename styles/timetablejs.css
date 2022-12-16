@@ -184,7 +184,6 @@ overflow-x: hidden;
 
 .timetable .time-entry {
     white-space: nowrap !important;
-    background-color: yellowgreen;
     transition: background-color .2s;
     height: 24px !important;
     display: block;
@@ -194,8 +193,6 @@ overflow-x: hidden;
     white-space: normal;
     overflow-y: hidden;
     overflow-x: hidden;
-    color: #fff;
-    border: 2px solid #73AD21;
     transform-style: preserve-3d;
 }
 
@@ -207,7 +204,6 @@ overflow-x: hidden;
 }
 
 .timetable .time-entry:hover {
-    background-color: yellowgreen
 }
 
 .unusedClass{
@@ -232,7 +228,14 @@ time, [name="scrollheader"]{
 }
 
 /* BUTTON UI */
-.timeTableButton{
+.timeTableButton {
+    font-family: "Google Sans",Roboto,Arial,sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    pointer-events: all;
+}
+
+.timeTableUIContainer {
     align-items: center;
     appearance: none;
     background-color: #fff;
@@ -244,17 +247,14 @@ time, [name="scrollheader"]{
     cursor: pointer;
     display: inline-flex;
     fill: currentcolor;
-    font-family: "Google Sans",Roboto,Arial,sans-serif;
-    font-size: 11px;
-    font-weight: 600;
-    height: 20px;
+    max-height: 20px;
+    min-height: 20px;
+    padding: 0px;
     justify-content: center;
     letter-spacing: .25px;
-    line-height: normal;
     margin-top: 10px;
     margin-bottom: 10px;
     margin-left: 10px;
-    max-width: 100%;
     overflow: visible;
     padding: 2px 24px;
     position: relative;
@@ -264,13 +264,65 @@ time, [name="scrollheader"]{
     user-select: none;
     -webkit-user-select: none;
     touch-action: manipulation;
-    width: auto;
     will-change: transform,opacity;
     z-index: 100;
     pointer-events: all;
 }
 
+.timeTableUIContainer .timeTableCheckbox {
+    max-width: fit-content;
+}
+
+.timeTableCheckboxLable {
+    font-family: "Google Sans",Roboto,Arial,sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    padding-left: 5px;
+    padding-right: 10px;
+}
+
+.noHover{
+    pointer-events: none;
+}
+
 .timeTableButton:hover {
     background: #F6F9FE;
     color: #174ea6;
+}
+
+.timeSlotEnrolled{
+    border-style: solid;
+    border: 1px solid #a6c9e2;
+    background-color: rgb(64, 121, 142);
+    color: white;
+}
+
+.timeSlotWaitlisted{
+    border-style: solid;
+    border: 1px solid #a6c9e2;
+    background-color: #ccffff;
+    color: #222222;
+}
+
+.timeSlotPlanned{
+    border-style: solid;
+    border: 1px solid #a6c9e2;
+    background: #FFFFFF;
+    color: #A0A0A0;
+}
+
+.timeSlotPersonalEvent{
+    border-style: solid;
+    border: 1px solid #a6c9e2;
+    background-color: rgb(64, 121, 142);
+    color: white;
+}
+
+.timetableContainer{
+    position: fixed; 
+    top: 0; 
+    left: 0; 
+    min-width: 100vw; 
+    pointer-events: none; 
+    z-index: 10;
 }
