@@ -192,21 +192,21 @@ class UCSDScheduleVisualizer{
         });
 
 
-        document.getElementById("M").addEventListener("click", (e)=>{
-            document.body.visualizer.getScheduleMapLinkForDay("M");
-        });
-        document.getElementById("Tu").addEventListener("click", (e)=>{
-            document.body.visualizer.getScheduleMapLinkForDay("Tu");
-        });
-        document.getElementById("W").addEventListener("click", (e)=>{
-            document.body.visualizer.getScheduleMapLinkForDay("W");
-        });
-        document.getElementById("Th").addEventListener("click", (e)=>{
-            document.body.visualizer.getScheduleMapLinkForDay("Th");
-        });
-        document.getElementById("F").addEventListener("click", (e)=>{
-            document.body.visualizer.getScheduleMapLinkForDay("F");
-        });
+        // document.getElementById("M").addEventListener("click", (e)=>{
+        //     document.body.visualizer.getScheduleMapLinkForDay("M");
+        // });
+        // document.getElementById("Tu").addEventListener("click", (e)=>{
+        //     document.body.visualizer.getScheduleMapLinkForDay("Tu");
+        // });
+        // document.getElementById("W").addEventListener("click", (e)=>{
+        //     document.body.visualizer.getScheduleMapLinkForDay("W");
+        // });
+        // document.getElementById("Th").addEventListener("click", (e)=>{
+        //     document.body.visualizer.getScheduleMapLinkForDay("Th");
+        // });
+        // document.getElementById("F").addEventListener("click", (e)=>{
+        //     document.body.visualizer.getScheduleMapLinkForDay("F");
+        // });
 
         document.getElementById("enrolled").addEventListener("click", (e)=>{
             document.body.visualizer.toggleEnrolled(e.target.checked)

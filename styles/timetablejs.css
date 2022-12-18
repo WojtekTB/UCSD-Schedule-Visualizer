@@ -230,7 +230,7 @@ time, [name="scrollheader"]{
 /* BUTTON UI */
 .timeTableButton {
     font-family: "Google Sans",Roboto,Arial,sans-serif;
-    font-size: 11px;
+    font-size: 13px;
     font-weight: 600;
     pointer-events: all;
 }
@@ -256,7 +256,7 @@ time, [name="scrollheader"]{
     margin-bottom: 10px;
     margin-left: 10px;
     overflow: visible;
-    padding: 2px 24px;
+    padding: 10px 10px;
     position: relative;
     text-align: center;
     text-transform: none;
