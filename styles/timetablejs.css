@@ -230,7 +230,7 @@ time, [name="scrollheader"]{
 /* BUTTON UI */
 .timeTableButton {
     font-family: "Google Sans",Roboto,Arial,sans-serif;
-    font-size: 11px;
+    font-size: 13px;
     font-weight: 600;
     pointer-events: all;
 }
@@ -256,7 +256,7 @@ time, [name="scrollheader"]{
     margin-bottom: 10px;
     margin-left: 10px;
     overflow: visible;
-    padding: 2px 24px;
+    padding: 10px 10px;
     position: relative;
     text-align: center;
     text-transform: none;
@@ -322,7 +322,20 @@ time, [name="scrollheader"]{
     position: fixed; 
     top: 0; 
     left: 0; 
-    min-width: 100vw; 
-    pointer-events: none; 
+    width: 100vw;
+    /* pointer-events: none;  */
+    z-index: 10;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 0;
+    padding-top: 0;
+}
+
+.topAlignedContainer {
+    position: fixed; 
+    top: 0; 
+    left: 0; 
+    width: 100vw;
     z-index: 10;
 }
