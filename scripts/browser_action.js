@@ -632,6 +632,7 @@ class UCSDScheduleVisualizer{
             // if we are already tracking some class but now found row that is not "Final Exam" or "Midterm"
             else if(currentKey !== null && rowTitle){
                 currentKey = null;
+                i--;
                 continue;
             }
             // if there is a row title that is not "Final Exam" set it as currentKey
