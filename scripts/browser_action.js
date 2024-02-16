@@ -377,6 +377,11 @@ class UCSDScheduleVisualizer{
 
             
             const days = this.textToDays(dayCell.innerText);
+
+            if(isNaN(timeStartHour) || isNaN(timeStartMin) || isNaN(timeEndHour) || isNaN(timeEndMin)){
+                return;
+            }
+            
             for (let j = 0; j < days.length; j++) {
                 let dayCode = days[j];
 
