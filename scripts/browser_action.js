@@ -712,6 +712,19 @@ class UCSDScheduleVisualizer{
     }
 }
 
+function onRatingNow(){
+    // Open the Chrome Web Store page for your extension where users can leave a review
+    window.open('https://chromewebstore.google.com/detail/ucsd-schedule-visualizer/jkaheldanccinoefddienccoblmcmhgn/reviews', '_blank');
+    // You should replace 'your-extension-id' with the actual ID of your extension
+    document.ratingWindow.remove(); // Remove the rating window after opening the review page
+    localStorage.setItem('extensionRatingWindowClosed', Infinity);
+}
+
+function onRatingDismiss(){
+    // Dismiss the window without taking any action
+    document.ratingWindow.remove();
+    localStorage.setItem('extensionRatingWindowClosed', 20+Math.random() * 10);
+}
 
 function showRatingWindow() {
     if(localStorage.getItem('extensionRatingWindowClosed') === null){
@@ -722,18 +735,18 @@ function showRatingWindow() {
         return; // If so, do not show the rating window again
     }
     // Create a div element for the rating window
-    const ratingWindow = document.createElement('div');
-    ratingWindow.style.position = 'fixed';
-    ratingWindow.style.top = '40px'; // Adjust the top position as needed
-    ratingWindow.style.right = '10px'; // Adjust the right position as needed
-    ratingWindow.style.width = '30vw';
-    ratingWindow.style.backgroundColor = '#fff';
-    ratingWindow.style.padding = '20px';
-    ratingWindow.style.border = '1px solid #ccc';
-    ratingWindow.style.boxShadow = '0 2px 10px rgba(0, 0, 0, 0.1)';
-    ratingWindow.style.textAlign = 'center';
-    ratingWindow.style.zIndex = 99999;
-    ratingWindow.innerHTML = `
+    document.ratingWindow = document.createElement('div');
+    document.ratingWindow.style.position = 'fixed';
+    document.ratingWindow.style.top = '40px'; // Adjust the top position as needed
+    document.ratingWindow.style.right = '10px'; // Adjust the right position as needed
+    document.ratingWindow.style.width = '30vw';
+    document.ratingWindow.style.backgroundColor = '#fff';
+    document.ratingWindow.style.padding = '20px';
+    document.ratingWindow.style.border = '1px solid #ccc';
+    document.ratingWindow.style.boxShadow = '0 2px 10px rgba(0, 0, 0, 0.1)';
+    document.ratingWindow.style.textAlign = 'center';
+    document.ratingWindow.style.zIndex = 99999;
+    document.ratingWindow.innerHTML = `
         <div style="display: inline-block; text-align: center;">
         <p>Hey!</p>
         <p>My name is Victor. I am a college student who made the UCSD Schedule Visualizer extension! </p>
@@ -749,23 +762,16 @@ function showRatingWindow() {
     `;
   
     // Append the rating window to the body
-    document.body.appendChild(ratingWindow);
-  
-    // Add event listeners to the rate and dismiss buttons
-    document.getElementById('rateButton').addEventListener('click', function() {
-      // Open the Chrome Web Store page for your extension where users can leave a review
-      window.open('https://chromewebstore.google.com/detail/ucsd-schedule-visualizer/jkaheldanccinoefddienccoblmcmhgn/reviews', '_blank');
-      // You should replace 'your-extension-id' with the actual ID of your extension
-      ratingWindow.remove(); // Remove the rating window after opening the review page
-      localStorage.setItem('extensionRatingWindowClosed', Infinity);
-    });
-  
-    document.getElementById('dismissButton').addEventListener('click', function() {
-      // Dismiss the window without taking any action
-      ratingWindow.remove();
-      localStorage.setItem('extensionRatingWindowClosed', 20+Math.random() * 10);
-    });
+    document.body.appendChild(document.ratingWindow);
+
+    document.getElementById('rateButton').addEventListener('click', onRatingNow);
+    document.getElementById('dismissButton').addEventListener('click', onRatingDismiss);
   }
 
 
-document.body.visualizer = new UCSDScheduleVisualizer();
+injectionInterval = setInterval(()=>{
+    if(document.getElementById("list-id-table")){
+        document.body.visualizer = new UCSDScheduleVisualizer();
+        clearInterval(injectionInterval);
+    }
+}, 300);
