@@ -110,7 +110,7 @@ class UCSDScheduleVisualizer{
         }
 
         // got all days sorted out with the events of the day
-        console.log(dayToLocationsMap);
+        // console.log(dayToLocationsMap);
         
         if(!dayToLocationsMap.has(dayCode)){
             alert("No events that day!");
@@ -132,7 +132,7 @@ class UCSDScheduleVisualizer{
             return 0;
           });
 
-        console.log(eventsThatDay);
+        // console.log(eventsThatDay);
 
         //build the map link
         let mapLink = mapURLStarter;
@@ -515,7 +515,7 @@ class UCSDScheduleVisualizer{
     }
 
     pullCurrentSchedulePayloads(){
-        console.log("pulling current schedule..");
+        // console.log("pulling current schedule..");
         let currentClasses = this.getCurrentScheduleMapFromPage(document);
         console.log(currentClasses);
         
@@ -720,7 +720,7 @@ class UCSDScheduleVisualizer{
 }
 
 injectionInterval = setInterval(()=>{
-    if(document.getElementById("list-id-table")){
+    if(document.getElementById("list-id-table") && document.getElementById("list-id-table").innerText.length > 0){
         document.body.visualizer = new UCSDScheduleVisualizer();
         clearInterval(injectionInterval);
     }
