@@ -48,11 +48,6 @@ const buildingToMapCode = {
 
 class UCSDScheduleVisualizer{
     constructor(){
-        if(!document.getElementById("list-id-table")){
-            // if do not see a table, then don't do anything
-            return;
-        }
-
         this.showEnrolled = true;
         this.showWaitlisted = true;
         this.showPlanned = true;
@@ -68,12 +63,9 @@ class UCSDScheduleVisualizer{
             this.setUpButtonEvents();
             // sub all clicks to add new events so that we never miss them
             setInterval(this.addHoverEventToNewClassRows, 500);
-            // update schedule
-            this.updateCurrentSchedule();
-            // render with just current schedule
-            this.renderTable();
         });
-        showRatingWindow();
+
+        setInterval(()=>this.tryUpdatingSchedule(), 500);
     }
 
     addToGoogleCalendar(){
@@ -115,7 +107,7 @@ class UCSDScheduleVisualizer{
         }
 
         // got all days sorted out with the events of the day
-        console.log(dayToLocationsMap);
+        // console.log(dayToLocationsMap);
         
         if(!dayToLocationsMap.has(dayCode)){
             alert("No events that day!");
@@ -137,7 +129,7 @@ class UCSDScheduleVisualizer{
             return 0;
           });
 
-        console.log(eventsThatDay);
+        // console.log(eventsThatDay);
 
         //build the map link
         let mapLink = mapURLStarter;
@@ -520,7 +512,7 @@ class UCSDScheduleVisualizer{
     }
 
     pullCurrentSchedulePayloads(){
-        console.log("pulling current schedule..");
+        // console.log("pulling current schedule..");
         let currentClasses = this.getCurrentScheduleMapFromPage(document);
         console.log(currentClasses);
         
@@ -610,6 +602,18 @@ class UCSDScheduleVisualizer{
         }
         let timeEndMin = parseInt(timeEnd.substring(timeEnd.indexOf(":")+1, timeEnd.length - 1));
         return {start: new Date(2015,7,17,timeStartHour,timeStartMin), end: new Date(2015,7,17,timeEndHour,timeEndMin)};
+    }
+
+    /**
+     * Check if schedule needs updating. Will return early if it does need to be updated, and will update if it does.
+     */
+    tryUpdatingSchedule(){
+        const newScheduleTableString = document.getElementById("list-id-table").innerText;
+        if(this.previousScheduleTableString !== newScheduleTableString){
+            this.previousScheduleTableString = newScheduleTableString;
+            document.body.visualizer.updateCurrentSchedule();
+            document.body.visualizer.renderTable();
+        }
     }
 
     getCurrentScheduleMapFromPage(){
@@ -712,65 +716,8 @@ class UCSDScheduleVisualizer{
     }
 }
 
-function onRatingNow(){
-    // Open the Chrome Web Store page for your extension where users can leave a review
-    window.open('https://chromewebstore.google.com/detail/ucsd-schedule-visualizer/jkaheldanccinoefddienccoblmcmhgn/reviews', '_blank');
-    // You should replace 'your-extension-id' with the actual ID of your extension
-    document.ratingWindow.remove(); // Remove the rating window after opening the review page
-    localStorage.setItem('extensionRatingWindowClosed', Infinity);
-}
-
-function onRatingDismiss(){
-    // Dismiss the window without taking any action
-    document.ratingWindow.remove();
-    localStorage.setItem('extensionRatingWindowClosed', 20+Math.random() * 10);
-}
-
-function showRatingWindow() {
-    if(localStorage.getItem('extensionRatingWindowClosed') === null){
-        localStorage.setItem('extensionRatingWindowClosed', (Math.random() * 4)+15);
-    }
-    if (localStorage.getItem('extensionRatingWindowClosed') > 0) {
-        localStorage.setItem('extensionRatingWindowClosed', localStorage.getItem('extensionRatingWindowClosed')-1);
-        return; // If so, do not show the rating window again
-    }
-    // Create a div element for the rating window
-    document.ratingWindow = document.createElement('div');
-    document.ratingWindow.style.position = 'fixed';
-    document.ratingWindow.style.top = '40px'; // Adjust the top position as needed
-    document.ratingWindow.style.right = '10px'; // Adjust the right position as needed
-    document.ratingWindow.style.width = '30vw';
-    document.ratingWindow.style.backgroundColor = '#fff';
-    document.ratingWindow.style.padding = '20px';
-    document.ratingWindow.style.border = '1px solid #ccc';
-    document.ratingWindow.style.boxShadow = '0 2px 10px rgba(0, 0, 0, 0.1)';
-    document.ratingWindow.style.textAlign = 'center';
-    document.ratingWindow.style.zIndex = 99999;
-    document.ratingWindow.innerHTML = `
-        <div style="display: inline-block; text-align: center;">
-        <p>Hey!</p>
-        <p>My name is Victor. I am a college student who made the UCSD Schedule Visualizer extension! </p>
-        <p>I made it on my own time entirely for free.</p>
-        <p>I would really appreciate it if you could rate it on google chrome store, or could share it with your classmates!</p>
-        <p>It would help me and my work a lot!</p>
-            <div style="display: inline-block; text-align: left;">
-                <p>Thank you!</p>
-            </div>
-        </div>
-      <button id="rateButton" style="padding: 10px 20px; background-color: #4CAF50; color: #fff; border: none; border-radius: 5px; cursor: pointer;">Rate Now</button>
-      <button id="dismissButton" style="margin-left: 10px; padding: 10px 20px; background-color: #ccc; color: #333; border: none; border-radius: 5px; cursor: pointer;">Dismiss</button>
-    `;
-  
-    // Append the rating window to the body
-    document.body.appendChild(document.ratingWindow);
-
-    document.getElementById('rateButton').addEventListener('click', onRatingNow);
-    document.getElementById('dismissButton').addEventListener('click', onRatingDismiss);
-  }
-
-
 injectionInterval = setInterval(()=>{
-    if(document.getElementById("list-id-table")){
+    if(document.getElementById("list-id-table") && document.getElementById("list-id-table").innerText.length > 0){
         document.body.visualizer = new UCSDScheduleVisualizer();
         clearInterval(injectionInterval);
     }

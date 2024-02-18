@@ -1,7 +1,7 @@
 {
     "name": "UCSD Schedule Visualizer",
     "description": "Help quickly visualize UCSD schedule.",
-    "version": "1.9.0",
+    "version": "1.9.2",
     "icons":{"128":"ucsd-icon-128.png"},
     "permissions": [
       "activeTab"
@@ -15,7 +15,7 @@
       {
         "matches": ["https://act.ucsd.edu/webreg2/*"],
         "css": ["styles/timetablejs.css", "styles/font.css"],
-        "js": ["scripts/browser_action.js", "scripts/timetable.js"]
+        "js": ["scripts/ratingWindow.js", "scripts/browser_action.js", "scripts/timetable.js"]
       }
     ],
     "manifest_version": 3
