@@ -48,11 +48,6 @@ const buildingToMapCode = {
 
 class UCSDScheduleVisualizer{
     constructor(){
-        if(!document.getElementById("list-id-table")){
-            // if do not see a table, then don't do anything
-            return;
-        }
-
         this.showEnrolled = true;
         this.showWaitlisted = true;
         this.showPlanned = true;
@@ -711,8 +706,6 @@ class UCSDScheduleVisualizer{
         return classInfo;
     }
 }
-
-
 
 injectionInterval = setInterval(()=>{
     if(document.getElementById("list-id-table")){
