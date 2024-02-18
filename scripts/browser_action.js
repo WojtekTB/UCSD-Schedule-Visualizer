@@ -63,12 +63,9 @@ class UCSDScheduleVisualizer{
             this.setUpButtonEvents();
             // sub all clicks to add new events so that we never miss them
             setInterval(this.addHoverEventToNewClassRows, 500);
-            // update schedule
-            this.updateCurrentSchedule();
-            // render with just current schedule
-            this.renderTable();
         });
-        showRatingWindow();
+
+        setInterval(()=>this.tryUpdatingSchedule(), 500);
     }
 
     addToGoogleCalendar(){
