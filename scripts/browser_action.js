@@ -607,6 +607,18 @@ class UCSDScheduleVisualizer{
         return {start: new Date(2015,7,17,timeStartHour,timeStartMin), end: new Date(2015,7,17,timeEndHour,timeEndMin)};
     }
 
+    /**
+     * Check if schedule needs updating. Will return early if it does need to be updated, and will update if it does.
+     */
+    tryUpdatingSchedule(){
+        const newScheduleTableString = document.getElementById("list-id-table").innerText;
+        if(this.previousScheduleTableString !== newScheduleTableString){
+            this.previousScheduleTableString = newScheduleTableString;
+            document.body.visualizer.updateCurrentSchedule();
+            document.body.visualizer.renderTable();
+        }
+    }
+
     getCurrentScheduleMapFromPage(){
         let listOfScheduleRows = document.getElementById("list-id-table").children[0].children;
     
