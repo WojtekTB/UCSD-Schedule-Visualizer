@@ -15,7 +15,7 @@
       {
         "matches": ["https://act.ucsd.edu/webreg2/*"],
         "css": ["styles/timetablejs.css", "styles/font.css"],
-        "js": ["scripts/browser_action.js", "scripts/timetable.js"]
+        "js": ["scripts/ratingWindow.js", "scripts/browser_action.js", "scripts/timetable.js"]
       }
     ],
     "manifest_version": 3
