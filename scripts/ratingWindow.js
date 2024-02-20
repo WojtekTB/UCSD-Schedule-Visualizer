@@ -21,6 +21,9 @@ function showRatingWindow() {
         localStorage.setItem('extensionRatingWindowClosed', localStorage.getItem('extensionRatingWindowClosed')-1);
         return; // If so, do not show the rating window again
     }
+    if(document.ratingWindow){
+        return; // already showing a rating window
+    }
     // Create a div element for the rating window
     document.ratingWindow = document.createElement('div');
     document.ratingWindow.style.position = 'fixed';
